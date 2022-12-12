@@ -11,6 +11,7 @@ const baseURL = "https://login";
 export default class Login extends Component {
   constructor(props) {
     super(props);
+    console.log("props", props);
     this.state = {
       isLogin: true
     };

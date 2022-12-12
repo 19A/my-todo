@@ -1,22 +1,28 @@
 import React from "react";
+import { ConfigProvider } from "antd";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
-import store from "./store";
-import { Provider } from "mobx-react";
-import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
+import { Provider } from "mobx-react";
+import globalStore from "./store/index";
+import reportWebVitals from "./reportWebVitals";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-console.log("golal", store);
 root.render(
-  <Provider store={store}>
-    <React.StrictMode>
-      <BrowserRouter>
+  <BrowserRouter>
+    <Provider store={globalStore}>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#00b96b"
+          }
+        }}
+      >
         <App />
-      </BrowserRouter>
-    </React.StrictMode>
-  </Provider>
+      </ConfigProvider>
+    </Provider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
