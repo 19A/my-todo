@@ -19,10 +19,7 @@ const routerGenerator = () =>
 export default function App() {
   return (
     <Switch>
-      {/* <Route path='/'>{Home}</Route>
-      <Route path='/login'>{Home}</Route>
-      <Route path='/category'>{Category}</Route>
-      <Route path='/products'>{Products}</Route> */}
+      {/* <Route path='/'>{Home}</Route>*/}
       {routers.map(({ component, path, ...other }) => {
         return (
           <Route

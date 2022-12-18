@@ -3,7 +3,8 @@ import Category from "../pages/Category";
 import Products from "../pages/Products";
 export const routers = [
   {
-    path: "/login",
+    path: "/",
+    exact: true,
     component: Home
     // component: () => import("../pages/Home")
   },

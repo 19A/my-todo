@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import { inject, observer } from "mobx-react";
+// import { registerApi } from "@/services/index.js";
+import { registerApi } from "@/services/index.js";
 import { Button, Checkbox, Form, Input, Row, Col } from "antd";
 
 import axios from "axios";
 import "./login.css";
 const baseURL = "https://login";
 
+/*eslint-disable*/
 @inject("store")
 @observer
 export default class Login extends Component {
@@ -20,7 +23,7 @@ export default class Login extends Component {
   forgetPassword = (values) => {};
 
   onLogin = async (data) => {
-    const res = await this.register(data);
+    const res = await registerApi(data);
     if (res) {
       // 注册成功
       // 存入用户信息至本地
