@@ -14,3 +14,11 @@ import { get, post, baseURL } from "../utils/network";
 export function registerApi(data) {
   return post(`${baseURL}/register`, data);
 }
+
+/**
+ * @description 修改密码api
+ * @param {*} 注册信息
+ */
+export function pwdModifyApi(data) {
+  return post(`${baseURL}/modify-pwd`, data);
+}

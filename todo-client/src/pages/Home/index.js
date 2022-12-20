@@ -1,15 +1,15 @@
 import React, { Fragment } from "react";
 import { Layout } from "antd";
-import Login from "./Login";
-const { Header, Footer, Sider, Content } = Layout;
+import { Header } from "@/components/Page";
 const Home = () => (
   <Layout>
-    <Header>Header</Header>
-    <Layout>
+    <Header />
+    {/* <Layout>
       <Content>Content</Content>
       <Login />
+
     </Layout>
-    <Footer>Footer</Footer>
+    <Footer>Footer</Footer> */}
   </Layout>
 );
 export default Home;

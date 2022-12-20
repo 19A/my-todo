@@ -1,16 +1,18 @@
+import axios from "axios";
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-// import { registerApi } from "@/services/index.js";
-import { registerApi } from "@/services/index.js";
 import { Button, Checkbox, Form, Input, Row, Col } from "antd";
 
-import axios from "axios";
+import { registerApi } from "@/services/index.js";
+
 import "./login.css";
 const baseURL = "https://login";
 
 /*eslint-disable*/
 @inject("store")
 @observer
+@withRouter
 export default class Login extends Component {
   constructor(props) {
     super(props);
@@ -31,6 +33,7 @@ export default class Login extends Component {
   };
 
   onLoginFailed = (errorInfo) => {
+    this.props.history.push("/home");
     console.log("Failed:", errorInfo);
   };
 
