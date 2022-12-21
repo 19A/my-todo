@@ -140,5 +140,7 @@ export class Header extends Component {
 }
 
 export class Content extends Component {
-  render() {}
+  render() {
+    return <div className='content-container' {...this.props}></div>;
+  }
 }

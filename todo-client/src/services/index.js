@@ -22,3 +22,27 @@ export function registerApi(data) {
 export function pwdModifyApi(data) {
   return post(`${baseURL}/modify-pwd`, data);
 }
+
+/**
+ * @description list
+ * @param {*} 列表查询
+ */
+export function queryListApi(data) {
+  return post(`${baseURL}/item/query`, data);
+}
+
+/**
+ * @description list
+ * @param {*} 新增子项
+ */
+export function createItemApi(data) {
+  return post(`${baseURL}/item/create`, data);
+}
+
+/**
+ * @description list
+ * @param {*} 删除子项
+ */
+export function deleteItemApi(data) {
+  return post(`${baseURL}/item/delete`, data);
+}
