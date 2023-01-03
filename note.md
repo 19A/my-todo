@@ -51,6 +51,7 @@ vscode寻找别名路径文件失败：
 技术栈：nodejs-v14 mysql-5.7 express-v4 nodemon crypto boom pm2
 MySQL：Node.js 连接 MySQL 数据库
 cors：实现 Node 服务端跨域的 JS 库。
+nodemon:使用nodemon实现热更新，无需每次修改手动重启服务。
 express-validator：一个基于 Express 的数据验证中间件，可以方便的判断传入的表单数据是否合法
 body-parser：对 post 请求的请求体进行解析的 express 中间件。
 boom：处理程序异常状态，boom 是一个兼容 HTTP 的错误对象，他提供了一些标准的 HTTP 错误，比如 400(参数错误)等。
@@ -75,5 +76,33 @@ token的加密、解密校验、mysql配置连接 查询
 业务逻辑：
 用户登录注册查询等 API 接口
 
+
+
+```
+
+```
+1.expressJwt is not a function
+现象: 7.x.x版本引入方式为 const expressJwt = require('express-jwt')则出现此报错;原因版本问题
+解决：使用6.x.x版本 修改引入方式为  const {expressJwt} = require('express-jwt');
+
+
+2.Router.use() requires a middleware function but got a ' + gettype(fn)
+现象：使用router.use('api', xxxRoute); 其中xxxRouter未从对应文件中暴露;
+解决：module.exports = xxxRoute;
+
+
+3.remote target看不到 本地已经有开启inspect的nodejs程序?
+现象：使用命令 node app.js --inspect;
+解决：官网正确命令 node --inspect app.js;
+
+4.客户端请求服务器需要代理。衍生的跨域问题同样需要服务端处理(暂时为前端配置代理端口处理)
+
+5.数据库相关
+查询数据库报错： connect ETIMEDOUT?
+现象：querySql方法查询连接mySQL超时报错
+解决：dbConfig内数据库密码配置错误！！！
+
+现象：数据库查询密码报错：code: "ER_BAD_FIELD_ERROR"
+解决：mySQL中密码和用户名中设置为字符串类型， 但是查询的sql内不为字符串！加入引号即可。
 
 ```

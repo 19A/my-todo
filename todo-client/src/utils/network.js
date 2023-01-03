@@ -7,10 +7,10 @@
  */
 
 import axios from "axios";
-
+import { notification } from "antd";
 // const token = getUserToken();
 
-const baseURL = "/";
+const baseURL = "/api";
 const service = new axios.create({
   baseURL,
   timeout: 55000 // 超时时间
@@ -124,10 +124,18 @@ export function post(url, params) {
   return new Promise((resolve, reject) => {
     axios
       .post(url, {
-        data: params
+        ...params
       })
       .then((response) => {
-        resolve(response.data);
+        const { code, msg } = response.data;
+        if (msg && code !== 200) {
+          notification.error({
+            message: msg
+          });
+          resolve();
+        } else {
+          resolve(response.data);
+        }
       })
       .catch((error) => {
         reject(error.data);

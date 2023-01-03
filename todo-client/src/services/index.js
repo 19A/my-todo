@@ -12,7 +12,7 @@ import { get, post, baseURL } from "../utils/network";
  * @param {*} 注册信息
  */
 export function registerApi(data) {
-  return post(`${baseURL}/register`, data);
+  return post(`${baseURL}/user/login`, data);
 }
 
 /**

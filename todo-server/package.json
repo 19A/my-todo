@@ -4,9 +4,17 @@
     "boom": "^7.3.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "express-jwt": "^7.7.7",
+    "express-jwt": "6.1.1",
     "express-validator": "^6.14.2",
     "jsonwebtoken": "^8.5.1",
     "mysql": "^2.18.1"
+  },
+  "scripts": {
+    "start": "nodemon app.js",
+    "dev": "nodemon --inspect=9210 app.js",
+    "debug": "nodemon debug app.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
   }
 }

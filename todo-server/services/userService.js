@@ -12,22 +12,21 @@ const {
 } = require("../utils/constant");
 const { decode } = require("../utils/user-jwt"); // 解密
 
-// 登录入口
+// 登录
 function login(req, res, next) {
   const err = validationResult(req);
   // 验证请求信息
-  debugger;
   if (!err.isEmpty()) {
     // 验证失败则 统一抛错
-    next(boom.badRequest(msg));
+    next(boom.badRequest("验证失败 服务端抛错"));
   } else {
     // 获取用户信息 md5加密 查询数据库中是否存在该用户，不存在则报错，存在则签发token返回前端
     let { username, password } = req.body;
     password = md5(password);
-    const queryUser = `select * from sys_user where username=${username} and password=${password}`;
+    const queryUser = `select * from sys_user where username='${username}' and password='${password}'`;
     querySql(queryUser).then((user) => {
       console.log("用户登录===", user);
-      if (!user) {
+      if (!user || !user.length) {
         res.json({
           code: CODE_ERROR,
           msg: "用户名或密码错误",
@@ -61,6 +60,10 @@ function login(req, res, next) {
     });
   }
 }
+
+// 重置
+
+// 忘记密码
 
 module.exports = {
   login

@@ -26,6 +26,7 @@ export default class Login extends Component {
 
   onLogin = async (data) => {
     const res = await registerApi(data);
+    debugger;
     if (res) {
       // 注册成功
       // 存入用户信息至本地

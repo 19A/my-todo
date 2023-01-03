@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { ConfigProvider } from "antd";
+import { ConfigProvider, notification } from "antd";
 import { Provider } from "mobx-react";
 import ReactDOM from "react-dom/client";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
@@ -18,6 +18,14 @@ import "./index.css";
 //     });
 //     return <Routes />;
 //   });
+
+// 全局配置-提醒框
+notification.config({
+  placement: "bottomRight",
+  bottom: 30,
+  duration: 3,
+  rtl: false // 一种阅读模式 right to left
+});
 
 const App = (app) => {
   // console.log("app", app);
