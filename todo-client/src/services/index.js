@@ -8,11 +8,19 @@
 import { get, post, baseURL } from "../utils/network";
 
 /**
+ * @description 登录api
+ * @param {*} 用户登录信息
+ */
+export function loginApi(data) {
+  return post(`${baseURL}/user/login`, data);
+}
+
+/**
  * @description 注册api
  * @param {*} 注册信息
  */
 export function registerApi(data) {
-  return post(`${baseURL}/user/login`, data);
+  return post(`${baseURL}/user/register`, data);
 }
 
 /**

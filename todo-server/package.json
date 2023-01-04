@@ -10,8 +10,8 @@
     "mysql": "^2.18.1"
   },
   "scripts": {
-    "start": "nodemon app.js",
-    "dev": "nodemon --inspect=9210 app.js",
+    "normal": "node app.js",
+    "start": "nodemon --inspect=9210 app.js",
     "debug": "nodemon debug app.js"
   },
   "devDependencies": {

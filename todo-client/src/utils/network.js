@@ -129,9 +129,8 @@ export function post(url, params) {
       .then((response) => {
         const { code, msg } = response.data;
         if (msg && code !== 200) {
-          notification.error({
-            message: msg
-          });
+          const message = typeof msg === "string" ? msg : JSON.stringify(msg);
+          notification.error({ message });
           resolve();
         } else {
           resolve(response.data);

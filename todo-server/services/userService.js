@@ -71,60 +71,77 @@ function register(req, res, next) {
   } else {
     // 获取用户信息 md5加密 查询数据库中是否存在该用户，不存在则报错，存在则签发token返回前端
     let { username, password } = req.body;
-    findUser(username, password).then((user) => {
-      console.log("用户注册===", user);
-      // 查询用户是否已经注册过
-      if (user) {
-        res.json({
-          code: CODE_ERROR,
-          msg: "用户已存在",
-          data: null
-        });
-      } else {
-        // 注册用户，签证
-        password = md5(password);
-        const insertSql = `insert into sys_user (username, password) values ('${username}', '${password}')`;
-        querySql(insertSql).then((result) => {
-          // 数据库插入失败
-          console.log("用户注册数据插入：result=====", result);
-          if (!result) {
-            res.json({
-              code: CODE_ERROR,
-              msg: "注册失败",
-              data: null
-            });
-          } else {
-            // 注册成功
-            const queryUser = `select * from sys_user where username='${username}' and password='${password}'`;
-            querySql(queryUser).then((user) => {
-              const token = jwt.sign(
-                // payload：签发的 token 里面要包含的一些数据。
-                { username },
-                PRIVATE_KEY,
-                { expiresIn: JWT_EXPIRED }
-              );
-              let userData = {
-                id: user[0].id,
-                username: user[0].username,
-                nickname: user[0].nickname,
-                avator: user[0].avator,
-                sex: user[0].sex,
-                gmt_create: user[0].gmt_create,
-                gmt_modify: user[0].gmt_modify
-              };
+    findUser(username, password)
+      .then((user) => {
+        console.log("用户注册===", user);
+        // 查询用户是否已经注册过
+        if (user) {
+          res.json({
+            code: CODE_ERROR,
+            msg: "用户已存在",
+            data: null
+          });
+        } else {
+          // 注册用户，签证
+          password = md5(password);
+          const insertSql = `insert into sys_user (username, password) values ('${username}', '${password}')`;
+          querySql(insertSql)
+            .then((result) => {
+              // 数据库插入失败
+              console.log("用户注册数据插入：result=====", result);
+              if (!result) {
+                res.json({
+                  code: CODE_ERROR,
+                  msg: "注册失败",
+                  data: null
+                });
+              } else {
+                // 注册成功
+                const queryUser = `select * from sys_user where username='${username}' and password='${password}'`;
+                querySql(queryUser).then((user) => {
+                  const token = jwt.sign(
+                    // payload：签发的 token 里面要包含的一些数据。
+                    { username },
+                    PRIVATE_KEY,
+                    { expiresIn: JWT_EXPIRED }
+                  );
+                  let userData = {
+                    id: user[0].id,
+                    username: user[0].username,
+                    nickname: user[0].nickname,
+                    avator: user[0].avator,
+                    sex: user[0].sex,
+                    gmt_create: user[0].gmt_create,
+                    gmt_modify: user[0].gmt_modify
+                  };
+                  res.json({
+                    code: CODE_SUCCESS,
+                    msg: "注册成功",
+                    data: {
+                      token,
+                      userData
+                    }
+                  });
+                });
+              }
+            })
+            .catch((err) => {
+              debugger;
               res.json({
-                code: CODE_SUCCESS,
-                msg: "注册成功",
-                data: {
-                  token,
-                  userData
-                }
+                code: CODE_ERROR,
+                msg: err,
+                data: null
               });
             });
-          }
+        }
+      })
+      .catch((error) => {
+        res.json({
+          code: CODE_ERROR,
+          msg: error,
+          data: null
         });
-      }
-    });
+      });
   }
 }
 
@@ -135,9 +152,10 @@ function register(req, res, next) {
 // 查询用户
 function findUser(username, password) {
   const queryUser = `select * from sys_user where username='${username}' and password='${password}'`;
-  queryOne(queryUser);
+  return queryOne(queryUser);
 }
 
 module.exports = {
-  login
+  login,
+  register
 };

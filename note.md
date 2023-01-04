@@ -62,7 +62,7 @@ express-jwt：express-jwt 是在 jsonwebtoken 的基础上做了上层封装，�
 ```
 功能模块：
 登录(退出)
-注册
+注册：注册逻辑【用户注册账号，后台查数据库是否内是否有重复账号，没有则插入用户表新用户，注册成功后跳转登录界面】
 记住密码
 修改密码
 todoList增删改查
@@ -81,6 +81,7 @@ token的加密、解密校验、mysql配置连接 查询
 ```
 
 ```
+遇到的问题：
 1.expressJwt is not a function
 现象: 7.x.x版本引入方式为 const expressJwt = require('express-jwt')则出现此报错;原因版本问题
 解决：使用6.x.x版本 修改引入方式为  const {expressJwt} = require('express-jwt');
@@ -104,5 +105,11 @@ token的加密、解密校验、mysql配置连接 查询
 
 现象：数据库查询密码报错：code: "ER_BAD_FIELD_ERROR"
 解决：mySQL中密码和用户名中设置为字符串类型， 但是查询的sql内不为字符串！加入引号即可。
+
+现象： ER_DUP_ENTRY: Duplicate entry 'ad1' for key 'username_UNIQUE'
+原因：多次重复注册重复数据 插入重复数据时 未处理改数据库的报错抛错。
+解决：后端接口包装 数据库操作报错
+
+现象：数据库查询超时报错，但是接口一直pedding，如何处理?
 
 ```

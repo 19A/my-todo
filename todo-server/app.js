@@ -16,6 +16,5 @@ app.use(bodyParser.urlencoded({ extended: true })); // 解析form表单提交的
 
 app.use("/api", router);
 app.listen(8888, () => {
-  debugger;
   console.log("服务已启动  http://localhost:8888");
 });

@@ -2,13 +2,26 @@ import axios from "axios";
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import { Button, Checkbox, Form, Input, Row, Col } from "antd";
+import { Button, Checkbox, Form, Input, Row, Col, notification } from "antd";
 
-import { registerApi } from "@/services/index.js";
+import { loginApi, registerApi } from "@/services/index.js";
 
 import "./login.css";
 const baseURL = "https://login";
 
+const defaultFormStyle = {
+  labelCol: { span: 8 },
+  wrapperCol: { span: 16 }
+};
+const defaultFormConfig = {
+  autoComplete: "off"
+};
+const defaultFormItemStyle = {
+  wrapperCol: {
+    offset: 8,
+    span: 16
+  }
+};
 /*eslint-disable*/
 @inject("store")
 @observer
@@ -16,36 +29,56 @@ const baseURL = "https://login";
 export default class Login extends Component {
   constructor(props) {
     super(props);
+    window.__globalStore = props; // 对外暴露 用于调试
     console.log("props", props);
+    console.log(
+      "this.props.store.userStore.userInfo",
+      this.props.store.userStore.userInfo,
+      JSON.parse(JSON.stringify(this.props.store.userStore.userInfo))
+    );
+
     this.state = {
       isLogin: true
     };
   }
 
+  // 忘记密码
   forgetPassword = (values) => {};
 
+  // 登录
   onLogin = async (data) => {
-    const res = await registerApi(data);
+    const res = await loginApi(data);
     debugger;
     if (res) {
-      // 注册成功
-      // 存入用户信息至本地
+      // 登录成功
+      notification.success({
+        message: "登录成功！"
+      });
+      this.props.history.push("/home");
     }
   };
 
-  onLoginFailed = (errorInfo) => {
-    this.props.history.push("/home");
-    console.log("Failed:", errorInfo);
-  };
-
-  onRegister = (data) => {
-    return axios.post(baseURL, data).then((response) => {
-      console.log("client ---- register");
-    });
-  };
-
-  onRegisterFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+  onRegister = async (data) => {
+    // const {userStore} = this.props;
+    const {
+      store: {
+        userStore: { setUserInfo }
+      }
+    } = this.props;
+    const res = await registerApi(data);
+    if (res) {
+      // 注册成功 存入用户信息至本地 并跳转到登录界面
+      const {
+        data: { token, userData }
+      } = res;
+      setUserInfo({ token, ...userData });
+      notification.success({
+        message: "注册成功，请登录账号"
+      });
+      this.tabChange("login");
+    } else {
+      // 注册失败，若为用户已存在，则跳转登录界面
+    }
   };
 
   tabChange = (key) => {
@@ -53,6 +86,15 @@ export default class Login extends Component {
       isLogin: key === "login"
     });
   };
+
+  // onRegisterFailed = (errorInfo) => {
+  //   console.log("Failed:", errorInfo);
+  // };
+
+  // onLoginFailed = (errorInfo) => {
+  //   this.props.history.push("/home");
+  //   console.log("Failed:", errorInfo);
+  // };
 
   render() {
     const { isLogin } = this.state;
@@ -75,19 +117,13 @@ export default class Login extends Component {
         {isLogin && (
           <div className='login'>
             <Form
-              name='basic'
-              labelCol={{
-                span: 8
-              }}
-              wrapperCol={{
-                span: 16
-              }}
+              name='login'
               initialValues={{
                 remember: true
               }}
               onFinish={this.onLogin}
-              onFinishFailed={this.onLoginFailed}
-              autoComplete='off'
+              {...defaultFormStyle}
+              {...defaultFormConfig}
             >
               <Form.Item
                 label='Username'
@@ -148,7 +184,7 @@ export default class Login extends Component {
         {!isLogin && (
           <div className='register'>
             <Form
-              name='basic'
+              name='register'
               labelCol={{
                 span: 8
               }}
@@ -188,7 +224,7 @@ export default class Login extends Component {
               </Form.Item>
               <Form.Item
                 label='Comfirm'
-                name='password'
+                name='confirmPwd'
                 rules={[
                   {
                     required: true,

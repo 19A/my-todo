@@ -5,6 +5,6 @@ const mysql = {
   user: "root", // 创建数据库设置的用户名
   password: "mysql", // 数据库密码
   database: "my_test", // 连接的数据库名
-  connectTimeout: 5000 //连接超时时间
+  connectTimeout: 1000 //连接超时时间
 };
 module.exports = mysql;
