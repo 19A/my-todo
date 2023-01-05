@@ -31,12 +31,6 @@ export default class Login extends Component {
     super(props);
     window.__globalStore = props; // 对外暴露 用于调试
     console.log("props", props);
-    console.log(
-      "this.props.store.userStore.userInfo",
-      this.props.store.userStore.userInfo,
-      JSON.parse(JSON.stringify(this.props.store.userStore.userInfo))
-    );
-
     this.state = {
       isLogin: true
     };
@@ -48,9 +42,9 @@ export default class Login extends Component {
   // 登录
   onLogin = async (data) => {
     const res = await loginApi(data);
-    debugger;
     if (res) {
       // 登录成功
+      this.saveUser(res);
       notification.success({
         message: "登录成功！"
       });
@@ -58,20 +52,19 @@ export default class Login extends Component {
     }
   };
 
-  onRegister = async (data) => {
-    // const {userStore} = this.props;
+  saveUser(data) {
     const {
-      store: {
-        userStore: { setUserInfo }
-      }
-    } = this.props;
+      data: { token, userData }
+    } = data;
+    this.props.store.globalToken = token;
+    this.props.store.userInfo = userData;
+  }
+
+  onRegister = async (data) => {
     const res = await registerApi(data);
     if (res) {
       // 注册成功 存入用户信息至本地 并跳转到登录界面
-      const {
-        data: { token, userData }
-      } = res;
-      setUserInfo({ token, ...userData });
+      this.saveUser(res);
       notification.success({
         message: "注册成功，请登录账号"
       });

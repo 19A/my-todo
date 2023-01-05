@@ -1,3 +1,4 @@
+import { inject, observer } from "mobx-react";
 import { Table, Space, Tag, notification } from "antd";
 import React, { Fragment, useEffect, useState } from "react";
 
@@ -45,6 +46,7 @@ const Home = (props) => {
   useEffect(() => {
     queryList();
   }, []);
+
   const columns = [
     {
       title: "Name",
@@ -92,13 +94,15 @@ const Home = (props) => {
       )
     }
   ];
+
   return (
     <Fragment>
       <Header />
+      <p>globalToken: {props.store.globalToken}</p>
       <Content>
         <Table columns={columns} dataSource={list} />
       </Content>
     </Fragment>
   );
 };
-export default Home;
+export default inject("store")(observer(Home));

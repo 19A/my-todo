@@ -11,6 +11,7 @@ const {
   JWT_EXPIRED
 } = require("../utils/constant");
 const { decode } = require("../utils/user-jwt"); // 解密
+const { password } = require("../db/dbConfig");
 
 // 登录
 function login(req, res, next) {
@@ -69,7 +70,7 @@ function register(req, res, next) {
     const [{ msg }] = err.errors;
     next(boom.badRequest(msg));
   } else {
-    // 获取用户信息 md5加密 查询数据库中是否存在该用户，不存在则报错，存在则签发token返回前端
+    // 获取用户信息 md5加密 查询数据库中是否存在该用户，存在则报错，存在则签发token返回前端
     let { username, password } = req.body;
     findUser(username, password)
       .then((user) => {
@@ -145,7 +146,56 @@ function register(req, res, next) {
   }
 }
 
-// 重置
+// 修改
+function modifyPwd(req, res, next) {
+  const err = validationResult(req);
+  if (!err.isEmpty()) {
+    const [{ msg }] = err.errors;
+    next(boom.badRequest(msg));
+  } else {
+    let { username, oldPwd, newPwd } = req.body;
+    // 校验用户名、密码
+    debugger;
+    oldPwd = md5(oldPwd);
+    validateUser(username, oldPwd).then((user) => {
+      if (user) {
+        if (newPwd) {
+          newPwd = md5(newPwd);
+          const sql = `update sys_user set password='${newPwd}' where username='${username}' and password='${oldPwd}'`;
+          querySql(sql)
+            .then((updateRes) => {
+              if (updateRes.constructor.name !== "OkPacket") {
+                res.json({
+                  code: CODE_ERROR,
+                  msg: "更改密码失败",
+                  data: null
+                });
+              } else {
+                res.json({
+                  code: CODE_SUCCESS,
+                  msg: "更改密码成功",
+                  data: null
+                });
+              }
+            })
+            .catch((err) => {
+              res.json({
+                code: CODE_ERROR,
+                msg: err,
+                data: null
+              });
+            });
+        }
+      } else {
+        res.json({
+          code: CODE_ERROR,
+          msg: "用户名和密码不匹配",
+          data: null
+        });
+      }
+    });
+  }
+}
 
 // 忘记密码
 
@@ -155,7 +205,14 @@ function findUser(username, password) {
   return queryOne(queryUser);
 }
 
+// 校验用户名和密码
+function validateUser(username, oldPassword) {
+  const query = `select * from sys_user where username='${username}' and password='${oldPassword}'`;
+  return queryOne(query);
+}
+
 module.exports = {
   login,
-  register
+  register,
+  modifyPwd
 };

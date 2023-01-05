@@ -18,13 +18,16 @@ const vaildatorForLogin = [
 // 注册校验
 const validatorForRegister = [
   body("username").isString().withMessage("用户名类型错误"),
-  body("password").isString().withMessage("密码类型错误"),
-  body("confirmPwd").isString().withMessage("密码类型错误")
+  body("oldPwd").isString().withMessage("旧密码类型错误"),
+  body("newPwd").isString().withMessage("新密码类型错误")
 ];
 
-// 用户登录路由
+// ----路由------
+// 用户登录
 router.post("/login", vaildatorForLogin, service.login);
-
+// 用户注册
 router.post("/register", validatorForRegister, service.register);
+// 修改密码
+router.post("/modify-pwd", validatorForRegister, service.modifyPwd);
 
 module.exports = router;

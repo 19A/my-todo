@@ -8,6 +8,7 @@ import { pwdModifyApi } from "@/services";
 // const { Header as AntHeader, Content as AntHeader } = Layout;
 
 import "./index.less";
+import { inject, observer } from "mobx-react";
 
 const menuConfig = [
   { title: "首页", path: "/" },
@@ -17,6 +18,8 @@ const menuConfig = [
 ];
 const Item = Form.Item;
 
+@inject("store")
+@observer
 @withRouter
 export class Header extends Component {
   formRef = createRef();
@@ -61,26 +64,26 @@ export class Header extends Component {
             window.alert("onFinish", JSON.stringify(values));
           }}
         >
-          <Item label='old' name='pwd-old' rules={[{ required: true }]}>
+          <Item label='name' name='username' rules={[{ required: true }]}>
             <Input.Password />
           </Item>
-          <Item label='new' name='pwd-new' rules={[{ required: true }]}>
+          <Item label='old' name='oldPwd' rules={[{ required: true }]}>
             <Input.Password />
           </Item>
-          <Item label='confirm' name='pwd-again' rules={[{ required: true }]}>
+          <Item label='new' name='newPwd' rules={[{ required: true }]}>
             <Input.Password />
           </Item>
         </Form>
       ),
       onOk: async () => {
-        debugger;
         console.log("this.formRef", this.formRef);
         const formEntity = this.formRef.current;
         const validatesRes = await formEntity.validateFields();
         if (!validatesRes) return Promise.reject();
         const values = formEntity.getFieldsValue();
-        // const res = await pwdModifyApi(values);
-        // if (!res) return Promise.reject();
+        const res = await pwdModifyApi({ ...values });
+        debugger;
+        if (!res) return Promise.reject();
         //密码修改成功 跳转重新登录
         window.alert("密码修改成功");
         this.props.history.push("/login");
@@ -112,6 +115,9 @@ export class Header extends Component {
   };
 
   render() {
+    const { userInfo } = this.props.store;
+    const { username, avator } = userInfo;
+
     return (
       <div className='header-container'>
         <div className='left'>
@@ -122,12 +128,12 @@ export class Header extends Component {
           <Dropdown menu={{ items: this.getOverlay() }}>
             <span>
               <Space>
-                <span className='user-name'>用户XXXX</span>
+                <span className='user-name'>{username}</span>
                 <img
                   alt='用户头像'
                   referrer='no-referrer'
                   className='user-avatar'
-                  src='../assets/avatar.jpg'
+                  src={avator}
                 />
                 <DownOutlined />
               </Space>

@@ -1,5 +1,12 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { observable, makeAutoObservable } from "mobx";
+import {
+  observable,
+  action,
+  makeObservable,
+  makeAutoObservable,
+  get,
+  autorun
+} from "mobx";
 const global = {
   // user.js
   accessToken: "",
@@ -25,9 +32,20 @@ const global = {
 };
 
 class RootStore {
+  globalToken = 1;
+  userInfo = {};
+  // @action
+  // updateToken = (token) => {
+  //   this.globalToken = token;
+  // };
   constructor() {
-    this.userStore = new UserStore(this);
+    // this.userStore = new UserStore(this);
     this.todoStore = new TodoStore(this);
+    makeObservable(this, {
+      globalToken: observable,
+      userInfo: observable
+    });
+    // autorun(() => console.log("111111", this.globalToken));
   }
 }
 

@@ -28,7 +28,7 @@ export function registerApi(data) {
  * @param {*} 注册信息
  */
 export function pwdModifyApi(data) {
-  return post(`${baseURL}/modify-pwd`, data);
+  return post(`${baseURL}/user/modify-pwd`, data);
 }
 
 /**
@@ -36,7 +36,7 @@ export function pwdModifyApi(data) {
  * @param {*} 列表查询
  */
 export function queryListApi(data) {
-  return post(`${baseURL}/item/query`, data);
+  return post(`${baseURL}/task/query`, data);
 }
 
 /**
@@ -44,7 +44,7 @@ export function queryListApi(data) {
  * @param {*} 新增子项
  */
 export function createItemApi(data) {
-  return post(`${baseURL}/item/create`, data);
+  return post(`${baseURL}/task/create`, data);
 }
 
 /**
@@ -52,5 +52,5 @@ export function createItemApi(data) {
  * @param {*} 删除子项
  */
 export function deleteItemApi(data) {
-  return post(`${baseURL}/item/delete`, data);
+  return post(`${baseURL}/task/delete`, data);
 }

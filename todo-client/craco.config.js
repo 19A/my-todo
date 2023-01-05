@@ -42,7 +42,10 @@ module.exports = {
   // },f
   babel: {
     // 支持装饰器模式语法
-    plugins: [["@babel/plugin-proposal-decorators", { legacy: true }]]
+    plugins: [
+      ["@babel/plugin-proposal-decorators", { legacy: true }]
+      // ["@babel/eslint-parser"]
+    ]
   },
   plugins: [
     {
