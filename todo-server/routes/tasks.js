@@ -6,4 +6,10 @@ const router = express.Router();
 
 router.get("/query", service.query);
 
+router.post("/create", service.create);
+
+router.post("/update", service.update);
+
+router.post("/delete", service.del);
+
 module.exports = router;

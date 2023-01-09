@@ -112,7 +112,14 @@ export function get(url, params) {
         params
       })
       .then((response) => {
-        resolve(response.data);
+        const { code, msg } = response.data;
+        if (msg && code !== 200) {
+          const message = typeof msg === "string" ? msg : JSON.stringify(msg);
+          notification.error({ message });
+          resolve();
+        } else {
+          resolve(response.data);
+        }
       })
       .catch((error) => {
         reject(error.data);
@@ -130,7 +137,7 @@ export function post(url, params) {
         const { code, msg } = response.data;
         if (msg && code !== 200) {
           const message = typeof msg === "string" ? msg : JSON.stringify(msg);
-          notification.error({ message });
+          notification.error({ message, duration: 4500 });
           resolve();
         } else {
           resolve(response.data);

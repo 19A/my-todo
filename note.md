@@ -17,6 +17,8 @@ craco 配置问题:
 问题：mobx对象更新失效？
 原因：取出可观察对象重新赋值修复肯定不会生效，需要直接对最终观察属性进行修改！
 
+问题： date.locale is not a function
+原因：日期插件赋值需要dayjs处理，locale配置从antd中引入
 ```
 
 #### TODO
@@ -141,6 +143,28 @@ token的加密、解密校验、mysql配置连接 查询
 原因：已经创建的connect在end之后继续使用则会报错。
 解决：每次重新查询时重新建立connect
 
+现象： Incorrect datetime value: '2023-01-08T16:03:27.029Z' for column 'gmt_expire' at row 1
+2023-01-08T16:03:27.029Z：Mon Jan 09 2023 00:03:27 GMT+0800 (中国标准时间)
+2023-01-08T16:03:27.029：Sun Jan 08 2023 16:03:27 GMT+0800 (中国标准时间)
+去掉Z可成功插入
+原因：？？
+
+接口504 ： Error occurred while trying to proxy: localhost:3000/api/task/query
+原因：？？
+解决：
+
+问题：对于更新接口后端如何对记录进行更新，增量还是全量？
+
+问题：code: "ERR_HTTP_HEADERS_SENT"
+Cannot set headers after they are sent to the client
+原因：客户端发送一次请求的时候，服务器端给出了多次响应
+解决：
+
+问题：数据设置默认的最后更新时间 返回前端的为2023-01-09T09:36:25.000Z？
+原因：？？
+
+问题：mySQL和程序时区问题
+http://www.ay1.cc/article/32521.html
 
 6.图片跨域问题---todo
 

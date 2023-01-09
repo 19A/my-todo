@@ -36,7 +36,7 @@ export function pwdModifyApi(data) {
  * @param {*} 列表查询
  */
 export function queryListApi(data) {
-  return post(`${baseURL}/task/query`, data);
+  return get(`${baseURL}/task/query`, data);
 }
 
 /**
@@ -53,4 +53,12 @@ export function createItemApi(data) {
  */
 export function deleteItemApi(data) {
   return post(`${baseURL}/task/delete`, data);
+}
+
+/**
+ * @description list
+ * @param {*} 修改子项
+ */
+export function modifyItemApi(data) {
+  return post(`${baseURL}/task/update`, data);
 }

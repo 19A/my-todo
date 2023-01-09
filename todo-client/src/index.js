@@ -1,7 +1,8 @@
 import React from "react";
-import { ConfigProvider, notification } from "antd";
 import { Provider } from "mobx-react";
 import ReactDOM from "react-dom/client";
+import { ConfigProvider, notification } from "antd";
+import locale from "antd/es/date-picker/locale/zh_CN";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 
 import globalStore from "./store/index";
@@ -19,7 +20,17 @@ import "./index.css";
 //     return <Routes />;
 //   });
 
-// 全局配置-提醒框
+// 全局配置
+const globalConfig = {
+  locale, // 本地化语言
+  thmee: {
+    // 主题
+    token: {
+      colorPrimary: "#00b96b"
+    }
+  }
+};
+// -- 提醒框
 notification.config({
   placement: "bottomRight",
   bottom: 30,
@@ -49,13 +60,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
     <Provider store={globalStore}>
-      <ConfigProvider
-        theme={{
-          token: {
-            colorPrimary: "#00b96b"
-          }
-        }}
-      >
+      <ConfigProvider {...globalConfig}>
         <App />
       </ConfigProvider>
     </Provider>

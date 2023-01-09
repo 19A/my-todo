@@ -48,7 +48,6 @@ var pingInterval;
 
 //新建查询连接
 function querySql(sql) {
-  debugger;
   var db = connect();
   console.log("db", db);
   return new Promise((resolve, reject) => {
