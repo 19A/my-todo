@@ -56,8 +56,11 @@ export default class Login extends Component {
     const {
       data: { token, userData }
     } = data;
-    this.props.store.globalToken = token;
+    // 存入mobx和localStorage
+    this.props.store.token = token;
     this.props.store.userInfo = userData;
+    localStorage.setItem("token", token);
+    localStorage.setItem("userInfo", JSON.stringify(userData));
   }
 
   onRegister = async (data) => {

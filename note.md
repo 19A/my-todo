@@ -19,14 +19,10 @@ craco 配置问题:
 
 问题： date.locale is not a function
 原因：日期插件赋值需要dayjs处理，locale配置从antd中引入
-```
 
-#### TODO
-
-```
-vscode寻找别名路径文件失败：
-如何重写 antd的notification方法：
-
+问题：table内使用filter受控组件文字没有显示？
+原因：antd 目前的默认文案是英文，但是引用了日期控件的中文包，并且在全局配置了。
+解决：antd 提供了一个 React 组件 ConfigProvider 用于全局配置国际化文案
 ```
 
 ## todo-server
@@ -161,12 +157,29 @@ Cannot set headers after they are sent to the client
 解决：
 
 问题：数据设置默认的最后更新时间 返回前端的为2023-01-09T09:36:25.000Z？
-原因：？？
+原因：？？数据库设置的时间类型为 timeStamp 类型，没有处理直接返回给前端就是这种格式的
+解决：后端程序需要处理为字符串再返回给前端
 
 问题：mySQL和程序时区问题
 http://www.ay1.cc/article/32521.html
 
 6.图片跨域问题---todo
 
+
+```
+
+#### TODO
+
+```
+vscode寻找别名路径文件失败：
+如何重写 antd的notification方法：
+
+语言国际化
+token鉴权： axios请求拦截器被设置token失败？完成
+接口风格restful化:
+物理删除变为逻辑删除:
+前端排序：单字段 多字段:
+后端排序:
+后端分页:
 
 ```

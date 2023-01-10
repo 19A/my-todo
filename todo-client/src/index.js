@@ -2,7 +2,8 @@ import React from "react";
 import { Provider } from "mobx-react";
 import ReactDOM from "react-dom/client";
 import { ConfigProvider, notification } from "antd";
-import locale from "antd/es/date-picker/locale/zh_CN";
+// import locale from "antd/es/date-picker/locale/zh_CN";
+import zhCN from "antd/locale/zh_CN";
 import { Route, Switch, BrowserRouter } from "react-router-dom";
 
 import globalStore from "./store/index";
@@ -19,18 +20,22 @@ import "./index.css";
 //     });
 //     return <Routes />;
 //   });
+const COLOR_PRIMARY_BLUE_1 = "#0840f8";
+const COLOR_PRIMARY_BLUE_2 = "#3f51b5";
+const COLOR_PRIMARY_BLUE_3 = "#7b8cff";
+const COLOR_PRIMARY_GREEN_1 = "#00b96b";
 
 // 全局配置
 const globalConfig = {
-  locale, // 本地化语言
-  thmee: {
-    // 主题
+  locale: zhCN, // 本地化语言
+  theme: {
     token: {
-      colorPrimary: "#00b96b"
+      colorPrimary: COLOR_PRIMARY_BLUE_1
     }
   }
 };
-// -- 提醒框
+
+// 提醒框
 notification.config({
   placement: "bottomRight",
   bottom: 30,

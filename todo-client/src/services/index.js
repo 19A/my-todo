@@ -5,14 +5,14 @@
  * @description
  * @copyright Copyright (c) 2020, Hand
  */
-import { get, post, baseURL } from "../utils/network";
+import { get, post } from "../utils/network";
 
 /**
  * @description 登录api
  * @param {*} 用户登录信息
  */
 export function loginApi(data) {
-  return post(`${baseURL}/user/login`, data);
+  return post(`/user/login`, data);
 }
 
 /**
@@ -20,7 +20,7 @@ export function loginApi(data) {
  * @param {*} 注册信息
  */
 export function registerApi(data) {
-  return post(`${baseURL}/user/register`, data);
+  return post(`/user/register`, data);
 }
 
 /**
@@ -28,7 +28,7 @@ export function registerApi(data) {
  * @param {*} 注册信息
  */
 export function pwdModifyApi(data) {
-  return post(`${baseURL}/user/modify-pwd`, data);
+  return post(`/user/modify-pwd`, data);
 }
 
 /**
@@ -36,7 +36,7 @@ export function pwdModifyApi(data) {
  * @param {*} 列表查询
  */
 export function queryListApi(data) {
-  return get(`${baseURL}/task/query`, data);
+  return get(`/task/query`, data);
 }
 
 /**
@@ -44,7 +44,7 @@ export function queryListApi(data) {
  * @param {*} 新增子项
  */
 export function createItemApi(data) {
-  return post(`${baseURL}/task/create`, data);
+  return post(`/task/create`, data);
 }
 
 /**
@@ -52,7 +52,7 @@ export function createItemApi(data) {
  * @param {*} 删除子项
  */
 export function deleteItemApi(data) {
-  return post(`${baseURL}/task/delete`, data);
+  return post(`/task/delete`, data);
 }
 
 /**
@@ -60,5 +60,5 @@ export function deleteItemApi(data) {
  * @param {*} 修改子项
  */
 export function modifyItemApi(data) {
-  return post(`${baseURL}/task/update`, data);
+  return post(`/task/update`, data);
 }

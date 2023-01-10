@@ -1,3 +1,5 @@
+import globalStore from "@/store/index";
+
 export function dateFormat(fmt, date) {
   let ret;
   const opt = {
@@ -19,4 +21,23 @@ export function dateFormat(fmt, date) {
     }
   }
   return fmt;
+}
+
+export function getUserToken() {
+  // 优先从mobx内取 再从localStorage中取
+  return localStorage.getItem("token");
+}
+
+export function getUserInfo() {
+  // 优先从mobx内取 再从localStorage中取
+  const token =
+    globalStore.userInfo || JSON.parse(localStorage.getItem("userInfo"));
+  return token;
+}
+
+export function clearUser() {
+  globalStore.token = null;
+  globalStore.userInfo = null;
+  localStorage.removeItem("token");
+  localStorage.removeItem("userInfo");
 }

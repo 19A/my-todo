@@ -31,21 +31,22 @@ const global = {
   Socket: {}
 };
 
+const defaultToken = localStorage.getItem("token");
+const defaultUser = JSON.parse(localStorage.getItem("userInfo")) || {};
+console.log("defaultToken", defaultToken);
 class RootStore {
-  globalToken = 1;
-  userInfo = {};
+  token = defaultToken;
+  userInfo = defaultUser;
+
   // @action
-  // updateToken = (token) => {
-  //   this.globalToken = token;
-  // };
   constructor() {
     // this.userStore = new UserStore(this);
     this.todoStore = new TodoStore(this);
     makeObservable(this, {
-      globalToken: observable,
+      token: observable,
       userInfo: observable
     });
-    // autorun(() => console.log("111111", this.globalToken));
+    autorun(() => console.log("111111", this.token, this.userInfo));
   }
 }
 

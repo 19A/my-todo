@@ -1,17 +1,16 @@
 // 用户信息api
-const { querySql, queryOne } = require("../utils/index");
+const {
+  querySql,
+  queryOne,
+  resolveData,
+  rejectError
+} = require("../utils/index");
 const md5 = require("../utils/md5"); // 加密算法
 const jwt = require("jsonwebtoken"); // 加密工具
 const boom = require("boom");
 const { body, validationResult } = require("express-validator");
-const {
-  CODE_ERROR,
-  CODE_SUCCESS,
-  PRIVATE_KEY,
-  JWT_EXPIRED
-} = require("../utils/constant");
-const { decode } = require("../utils/user-jwt"); // 解密
-const { password } = require("../db/dbConfig");
+const { CODE_ERROR, CODE_SUCCESS } = require("../utils/constant");
+const { setToken } = require("../utils/user-jwt"); // 解密
 
 // 登录
 function login(req, res, next) {
@@ -31,16 +30,11 @@ function login(req, res, next) {
       if (!user || !user.length) {
         res.json({
           code: CODE_ERROR,
-          msg: "用户名或密码错误",
+          message: "用户名或密码错误",
           data: null
         });
       } else {
-        const token = jwt.sign(
-          // payload：签发的 token 里面要包含的一些数据。
-          { username },
-          PRIVATE_KEY,
-          { expiresIn: JWT_EXPIRED }
-        );
+        const token = setToken({ username });
         let userData = {
           id: user[0].id,
           username: user[0].username,
@@ -52,7 +46,7 @@ function login(req, res, next) {
         };
         res.json({
           code: CODE_SUCCESS,
-          msg: "登录成功",
+          message: "登录成功",
           data: {
             token,
             userData
@@ -77,11 +71,7 @@ function register(req, res, next) {
         console.log("用户注册===", user);
         // 查询用户是否已经注册过
         if (user) {
-          res.json({
-            code: CODE_ERROR,
-            msg: "用户已存在",
-            data: null
-          });
+          rejectError(res, "用户已存在");
         } else {
           // 注册用户，签证
           password = md5(password);
@@ -91,21 +81,12 @@ function register(req, res, next) {
               // 数据库插入失败
               console.log("用户注册数据插入：result=====", result);
               if (!result) {
-                res.json({
-                  code: CODE_ERROR,
-                  msg: "注册失败",
-                  data: null
-                });
+                rejectError(res, "注册失败");
               } else {
                 // 注册成功
                 const queryUser = `select * from sys_user where username='${username}' and password='${password}'`;
                 querySql(queryUser).then((user) => {
-                  const token = jwt.sign(
-                    // payload：签发的 token 里面要包含的一些数据。
-                    { username },
-                    PRIVATE_KEY,
-                    { expiresIn: JWT_EXPIRED }
-                  );
+                  const token = setToken({ username });
                   let userData = {
                     id: user[0].id,
                     username: user[0].username,
@@ -115,33 +96,21 @@ function register(req, res, next) {
                     gmt_create: user[0].gmt_create,
                     gmt_modify: user[0].gmt_modify
                   };
-                  res.json({
-                    code: CODE_SUCCESS,
-                    msg: "注册成功",
-                    data: {
-                      token,
-                      userData
-                    }
+                  resolveData(res, {
+                    token,
+                    userData
                   });
                 });
               }
             })
             .catch((err) => {
               debugger;
-              res.json({
-                code: CODE_ERROR,
-                msg: err,
-                data: null
-              });
+              rejectError(res, err);
             });
         }
       })
       .catch((error) => {
-        res.json({
-          code: CODE_ERROR,
-          msg: error,
-          data: null
-        });
+        rejectError(res, error);
       });
   }
 }
@@ -165,33 +134,17 @@ function modifyPwd(req, res, next) {
           querySql(sql)
             .then((updateRes) => {
               if (updateRes.constructor.name !== "OkPacket") {
-                res.json({
-                  code: CODE_ERROR,
-                  msg: "更改密码失败",
-                  data: null
-                });
+                rejectError(res, "更改密码失败");
               } else {
-                res.json({
-                  code: CODE_SUCCESS,
-                  msg: "更改密码成功",
-                  data: null
-                });
+                resolveData(res, null);
               }
             })
             .catch((err) => {
-              res.json({
-                code: CODE_ERROR,
-                msg: err,
-                data: null
-              });
+              rejectError(res, err);
             });
         }
       } else {
-        res.json({
-          code: CODE_ERROR,
-          msg: "用户名和密码不匹配",
-          data: null
-        });
+        rejectError(res, "用户名和密码不匹配");
       }
     });
   }

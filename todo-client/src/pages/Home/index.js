@@ -18,7 +18,6 @@ import React, {
   forwardRef,
   useImperativeHandle
 } from "react";
-import { dateFormat } from "@/utils/index";
 import dayjs from "dayjs";
 import { Header, Content } from "@/components/Page";
 // import { notification } from "@/components/utils";
@@ -28,40 +27,16 @@ import {
   deleteItemApi,
   modifyItemApi
 } from "@/services";
-
+import "./index.less";
 const FormItem = Form.Item;
 const { TextArea } = Input;
-// const mock = [
-//   {
-//     key: "1",
-//     name: "John Brown",
-//     age: 32,
-//     address: "New York No. 1 Lake Park",
-//     tags: ["nice", "developer"]
-//   },
-//   {
-//     key: "2",
-//     name: "Jim Green",
-//     age: 42,
-//     address: "London No. 1 Lake Park",
-//     tags: ["loser"]
-//   },
-//   {
-//     key: "3",
-//     name: "Joe Black",
-//     age: 32,
-//     address: "Sidney No. 1 Lake Park",
-//     tags: ["cool", "teacher"]
-//   }
-// ];
-
-// 0:待办, 1: 完成, 2:删除
-const task_status = ["待办", "完成", "删除"];
+// 0:待办, 1: 完成, 2:删除, 999:全部
 const task = [
   {
     code: "todo",
     name: "待办",
     status: 0,
+    color: "geekblue",
     action: [
       {
         code: "edit",
@@ -81,8 +56,9 @@ const task = [
   },
   {
     code: "finish",
-    name: "完成",
     status: 1,
+    name: "完成",
+    color: "green",
     action: [
       {
         code: "edit",
@@ -102,16 +78,28 @@ const task = [
   },
   {
     code: "delete",
-    name: "删除",
+    name: "已删除",
     status: 2,
+    color: "red",
+    action: []
+  },
+  {
+    code: "all",
+    name: "全部",
+    status: 999,
     action: []
   }
 ];
+const modalConfig = {
+  width: 760,
+  okText: "确定",
+  cancelText: "取消"
+};
 
 const TaskForm = forwardRef(({ record }, ref) => {
   const formRef = useRef();
   // const formE = Form.useForm();
-  const { title, gmt_expire, content } = record;
+  const { title, gmt_expire = new Date(), content } = record;
   useImperativeHandle(ref, () => {
     return { formRef };
   });
@@ -138,7 +126,7 @@ const TaskForm = forwardRef(({ record }, ref) => {
         label='截止日期'
         name='gmt_expire'
         rules={[{ required: true }]}
-        initialValue={dayjs("2023-01-08 16:03:27", "YYYY-MM-DD")}
+        initialValue={dayjs(gmt_expire, "YYYY-MM-DD")}
       >
         <DatePicker format='YYYY-MM-DD' />
       </FormItem>
@@ -148,29 +136,30 @@ const TaskForm = forwardRef(({ record }, ref) => {
         rules={[{ required: true }]}
         initialValue={content}
       >
-        <TextArea />
+        <TextArea autoSize={{ minRows: 3, maxRows: 6 }} />
       </FormItem>
     </Form>
   );
 });
 const Home = (props) => {
   const [list, setList] = useState([]);
+  const [sortedInfo, setSortedInfo] = useState({});
+  const [filteredInfo, setFilteredInfo] = useState({});
   const taskFormRef = useRef();
 
   const queryList = () => {
-    queryListApi()
-      .then((res) => {
-        debugger;
-        setList(res.data.content || []);
-      })
-      .catch((err) =>
-        notification.error({
-          placement: "bottomRight",
-          message: "请求报错",
-          description:
-            "This is the content of the notification. This is the content of the notification. This is the content of the notification."
-        })
-      );
+    queryListApi().then((res) => {
+      debugger;
+      setList(res.data.content || []);
+    });
+    // .catch((err) =>
+    //   notification.error({
+    //     placement: "bottomRight",
+    //     message: "请求报错",
+    //     description:
+    //       "This is the content of the notification. This is the content of the notification. This is the content of the notification."
+    //   })
+    // );
   };
 
   const getValues = (formEntity) => {
@@ -191,6 +180,7 @@ const Home = (props) => {
       // ref: (e) => (taskFormRef.current = e)
     };
     Modal.confirm({
+      ...modalConfig,
       title: "任务新建",
       content: <TaskForm {...formProps} />,
       onOk: async () => {
@@ -200,8 +190,6 @@ const Home = (props) => {
         if (!validatesRes) return Promise.reject();
         const res = await createItemApi(getValues(formEntity));
         if (!res) return Promise.reject();
-        //任务创建成功,重新查询
-        window.alert("任务创建成功");
         queryList();
       },
       onCancel() {
@@ -221,7 +209,7 @@ const Home = (props) => {
     const tags = type === "task" ? taskInfo : actionInfo;
     return tags.map(({ code, color, name }) => {
       return (
-        <Tag color={color} key={code} onClick={() => handleTask(code, record)}>
+        <Tag key={code} color={color} onClick={() => handleTask(code, record)}>
           {name}
         </Tag>
       );
@@ -236,6 +224,7 @@ const Home = (props) => {
     switch (code) {
       case "edit":
         Modal.confirm({
+          ...modalConfig,
           title: "任务编辑",
           content: <TaskForm {...formProps} />,
           onOk: async () => {
@@ -247,7 +236,6 @@ const Home = (props) => {
             const res = await modifyItemApi({ ...record, ...values });
             if (!res) return Promise.reject();
             //任务创建成功,重新查询
-            window.alert("任务修改成功");
             queryList();
           },
           onCancel() {
@@ -269,7 +257,6 @@ const Home = (props) => {
         break;
       case "delete":
         const deleteRes = await deleteItemApi({ ...record });
-        debugger;
         if (deleteRes) {
           queryList();
         }
@@ -279,11 +266,20 @@ const Home = (props) => {
     }
   };
 
+  const handleChange = (page, filters, sorter) => {
+    console.log("Various parameters", page, filters, sorter);
+    setFilteredInfo(filters);
+    setSortedInfo(sorter);
+  };
+
   const columns = [
     {
       title: "序号",
       dataIndex: "seq",
-      key: "seq"
+      key: "seq",
+      render: function () {
+        return arguments[2] + 1;
+      }
     },
     {
       title: "标题",
@@ -296,15 +292,32 @@ const Home = (props) => {
       key: "content"
     },
     {
-      title: "截止日期",
+      title: "任务截止日期",
       dataIndex: "gmt_expire",
       key: "gmt_expire"
     },
+
     {
       title: "任务状态",
       dataIndex: "status",
       key: "status",
+      filters: task.map((i) => ({ text: i.name, value: i.status })),
+      filteredValue: filteredInfo.status || null,
+      onFilter: (value, record) => {
+        const cond =
+          value !== 999 && typeof value === "number"
+            ? record.status === value
+            : true;
+        return cond;
+      },
       render: (_, record) => getTags("task", record)
+    },
+    {
+      title: "最后更新日期",
+      dataIndex: "gmt_update",
+      key: "gmt_update",
+      sorter: (a, b) => (dayjs(a).diff(dayjs(b)) < 0 ? -1 : 1),
+      sortOrder: sortedInfo.columnKey === "gmt_update" ? sortedInfo.order : null
     },
     {
       title: "操作",
@@ -316,12 +329,26 @@ const Home = (props) => {
   return (
     <Fragment>
       <Header />
-      <p>globalToken: {props.store.globalToken}</p>
       <Content>
-        <Button onClick={queryList}>刷新</Button>
-        <Button onClick={createItem}>新建</Button>
-        {/* <Table columns={columns} dataSource={list} /> */}
-        <Table columns={columns} dataSource={list} />
+        <div style={{ marginBottom: 16 }}>
+          <Button
+            type='primary'
+            onClick={queryList}
+            style={{ marginRight: 16 }}
+          >
+            刷新
+          </Button>
+          <Button type='default' onClick={createItem}>
+            新建
+          </Button>
+        </div>
+        <p>globalToken: {props.store.token}</p>
+        <Table
+          columns={columns}
+          dataSource={list}
+          onChange={handleChange}
+          rowClassName='todo-table-row'
+        />
       </Content>
     </Fragment>
   );

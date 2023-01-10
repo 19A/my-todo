@@ -1,5 +1,11 @@
 // todo-list api
-const { querySql, queryOne } = require("../utils/index");
+const {
+  querySql,
+  queryOne,
+  dateFormat,
+  resolveData,
+  rejectError
+} = require("../utils/index");
 const md5 = require("../utils/md5"); // 加密算法
 const jwt = require("jsonwebtoken"); // 加密工具
 const boom = require("boom");
@@ -12,20 +18,19 @@ const {
   ERROR_MESSEAGE_NO_RECORD
 } = require("../utils/constant");
 
-const resolveData = (res, data) => {
-  res.json({
-    data,
-    msg: "操作成功",
-    code: CODE_SUCCESS
-  });
-};
-const rejectError = (res, errMsg) => {
-  res.json({
-    data: null,
-    code: CODE_ERROR,
-    msg: errMsg || "sql查询报错"
-  });
-};
+// 处理查询结果
+function handleQueryResult(data) {
+  // 对于日期字段处理格式
+  const dateFields = ["gmt_update"];
+  const DATE_FORMAT = "YYYY-MM-DD HH:mm:ss";
+  for (const record of data) {
+    record["gmt_create"] = dateFormat(DATE_FORMAT, record["gmt_create"]);
+    record["gmt_expire"] = dateFormat(DATE_FORMAT, record["gmt_expire"]);
+    record["gmt_update"] = dateFormat(DATE_FORMAT, record["gmt_update"]);
+  }
+  return data;
+}
+
 // 查询
 function query(req, res, next) {
   const err = validationResult(req);
@@ -36,8 +41,9 @@ function query(req, res, next) {
     querySql(sql)
       .then((sqlRes) => {
         if (sqlRes) {
+          const handleResult = handleQueryResult(sqlRes);
           resolveData(res, {
-            content: sqlRes || []
+            content: handleResult || []
           });
         }
       })
@@ -55,7 +61,6 @@ function create(req, res, next) {
   } else {
     const { title, content, gmt_expire } = req.body;
     const sql = `insert into sys_task (title, content, gmt_expire) values ('${title}','${content}','${gmt_expire}')`;
-    debugger;
     querySql(sql)
       .then((sqlRes) => {
         if (sqlRes) {
@@ -103,7 +108,7 @@ function update(req, res, next) {
   }
 }
 
-// 删除
+// 物理删除
 function del(req, res, next) {
   const err = validationResult(req);
   if (!err.isEmpty()) {

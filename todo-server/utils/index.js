@@ -1,6 +1,6 @@
 const mysql = require("mysql");
 const config = require("../db/dbConfig");
-
+const { CODE_ERROR, CODE_SUCCESS } = require("../utils/constant");
 // 用于保存数据连接实例
 // var db = null;
 function connect() {
@@ -85,7 +85,52 @@ function queryOne(sql) {
   });
 }
 
+// 格式化日期
+function dateFormat(fmt, date) {
+  let ret;
+  const opt = {
+    "Y+": date.getFullYear().toString(), // 年
+    "M+": (date.getMonth() + 1).toString(), // 月
+    "D+": date.getDate().toString(), // 日
+    "H+": date.getHours().toString(), // 时
+    "m+": date.getMinutes().toString(), // 分
+    "s+": date.getSeconds().toString() // 秒
+    // 有其他格式化字符需求可以继续添加，必须转化成字符串
+  };
+  for (let k in opt) {
+    ret = new RegExp("(" + k + ")").exec(fmt);
+    if (ret) {
+      fmt = fmt.replace(
+        ret[1],
+        ret[1].length == 1 ? opt[k] : opt[k].padStart(ret[1].length, "0")
+      );
+    }
+  }
+  return fmt;
+}
+
+// 统一成功回调
+const resolveData = (res, data) => {
+  res.json({
+    data,
+    message: "操作成功",
+    code: CODE_SUCCESS
+  });
+};
+
+// 统一失败回调
+const rejectError = (res, errMsg) => {
+  res.json({
+    data: null,
+    code: CODE_ERROR,
+    message: errMsg || "sql查询报错"
+  });
+};
+
 module.exports = {
   querySql,
-  queryOne
+  queryOne,
+  dateFormat,
+  resolveData,
+  rejectError
 };
