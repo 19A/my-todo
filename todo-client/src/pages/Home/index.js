@@ -20,7 +20,8 @@ import React, {
 } from "react";
 import dayjs from "dayjs";
 import { Header, Content } from "@/components/Page";
-// import { notification } from "@/components/utils";
+import { DATETIME_MAX } from "@/utils/constants";
+import { nullValueFilter } from "@/utils/index";
 import {
   queryListApi,
   createItemApi,
@@ -30,6 +31,7 @@ import {
 import "./index.less";
 const FormItem = Form.Item;
 const { TextArea } = Input;
+
 // 0:待办, 1: 完成, 2:删除, 999:全部
 const task = [
   {
@@ -99,7 +101,7 @@ const modalConfig = {
 const TaskForm = forwardRef(({ record }, ref) => {
   const formRef = useRef();
   // const formE = Form.useForm();
-  const { title, gmt_expire = new Date(), content } = record;
+  const { title, gmt_expire, content } = record;
   useImperativeHandle(ref, () => {
     return { formRef };
   });
@@ -126,7 +128,7 @@ const TaskForm = forwardRef(({ record }, ref) => {
         label='截止日期'
         name='gmt_expire'
         rules={[{ required: true }]}
-        initialValue={dayjs(gmt_expire, "YYYY-MM-DD")}
+        initialValue={dayjs(gmt_expire)}
       >
         <DatePicker format='YYYY-MM-DD' />
       </FormItem>
@@ -141,39 +143,67 @@ const TaskForm = forwardRef(({ record }, ref) => {
     </Form>
   );
 });
+
 const Home = (props) => {
+  const taskFormRef = useRef(null); // task弹框Ref
+  const searchInput = useRef(null); // title搜索InputRef
   const [list, setList] = useState([]);
   const [sortedInfo, setSortedInfo] = useState({});
   const [filteredInfo, setFilteredInfo] = useState({});
-  const taskFormRef = useRef();
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
 
-  const queryList = () => {
-    queryListApi().then((res) => {
-      debugger;
-      setList(res.data.content || []);
-    });
-    // .catch((err) =>
-    //   notification.error({
-    //     placement: "bottomRight",
-    //     message: "请求报错",
-    //     description:
-    //       "This is the content of the notification. This is the content of the notification. This is the content of the notification."
-    //   })
-    // );
-  };
+  useEffect(() => {
+    handleQuery();
+  }, []);
 
-  const getValues = (formEntity) => {
+  const getTaskFormValues = (formEntity) => {
     const values = formEntity.getFieldsValue();
     const { gmt_expire } = values;
-    const a = gmt_expire.format("YYYY-MM-DD HH:mm:ss");
-    debugger;
     return {
       ...formEntity.getFieldsValue(),
-      // gmt_expire: dateFormat("YYYY-MM-DD HH:mm:ss", new Date(gmt_expire))
-      gmt_expire: gmt_expire.format("YYYY-MM-DD HH:mm:ss")
+      gmt_expire: gmt_expire.format(DATETIME_MAX)
     };
   };
-  const createItem = () => {
+
+  const handleQuery = ({ params = null, isClear = false, other = {} } = {}) => {
+    let query = null;
+    const { selectedKeys, confirm, field } = other;
+    const fieldValue = selectedKeys && selectedKeys[0];
+    if (isClear) {
+      setSortedInfo({});
+      setFilteredInfo({});
+      setSearchText("");
+      setSearchedColumn("");
+    } else {
+      setSearchText(fieldValue);
+      setSearchedColumn(field);
+      query = { ...params, [field]: fieldValue };
+    }
+    const queryParams = nullValueFilter(query);
+    queryListApi(queryParams).then((res) => {
+      setList(res.data.content || []);
+    });
+  };
+
+  const handleTableChange = (pageInfo, filters, sorter) => {
+    console.log("Various parameters", pageInfo, filters, sorter);
+    setFilteredInfo(filters);
+    setSortedInfo(sorter);
+    const { field, order } = sorter;
+    const { current: page, pageSize: size } = pageInfo;
+    const pageParams = { page, size };
+    const transport = { ascend: "asc", descend: "desc" };
+    handleQuery({
+      params: {
+        ...filters,
+        ...pageParams,
+        sorter: order ? [field, transport[order]].join(",") : null
+      }
+    });
+  };
+
+  const handleTaskCreate = () => {
     const formProps = {
       record: {},
       ref: taskFormRef
@@ -188,9 +218,9 @@ const Home = (props) => {
         const formEntity = taskFormRef.current.formRef.current;
         const validatesRes = await formEntity.validateFields();
         if (!validatesRes) return Promise.reject();
-        const res = await createItemApi(getValues(formEntity));
+        const res = await createItemApi(getTaskFormValues(formEntity));
         if (!res) return Promise.reject();
-        queryList();
+        handleQuery();
       },
       onCancel() {
         console.log("Cancel");
@@ -198,25 +228,25 @@ const Home = (props) => {
     });
   };
 
-  useEffect(() => {
-    queryList();
-  }, []);
-
   // type: 标签类型 task | action
-  const getTags = (type, record) => {
+  const tagsRender = (type, record) => {
     const taskInfo = task.filter((i) => i.status === record.status);
     const actionInfo = task.find((i) => i.status === record.status).action;
     const tags = type === "task" ? taskInfo : actionInfo;
     return tags.map(({ code, color, name }) => {
       return (
-        <Tag key={code} color={color} onClick={() => handleTask(code, record)}>
+        <Tag
+          key={code}
+          color={color}
+          onClick={() => actionRender(code, record)}
+        >
           {name}
         </Tag>
       );
     });
   };
 
-  const handleTask = async (code, record) => {
+  const actionRender = async (code, record) => {
     const formProps = {
       record,
       ref: (e) => (taskFormRef.current = e)
@@ -232,11 +262,11 @@ const Home = (props) => {
             const formEntity = taskFormRef.current.formRef.current;
             const validatesRes = await formEntity.validateFields();
             if (!validatesRes) return Promise.reject();
-            const values = getValues(formEntity);
+            const values = getTaskFormValues(formEntity);
             const res = await modifyItemApi({ ...record, ...values });
             if (!res) return Promise.reject();
             //任务创建成功,重新查询
-            queryList();
+            handleQuery();
           },
           onCancel() {
             console.log("Cancel");
@@ -246,19 +276,19 @@ const Home = (props) => {
       case "todo":
         const updateRes = await modifyItemApi({ ...record, status: 0 });
         if (updateRes) {
-          queryList();
+          handleQuery();
         }
         break;
       case "finish":
         const finishRes = await modifyItemApi({ ...record, status: 1 });
         if (finishRes) {
-          queryList();
+          handleQuery();
         }
         break;
       case "delete":
         const deleteRes = await deleteItemApi({ ...record });
         if (deleteRes) {
-          queryList();
+          handleQuery();
         }
         break;
       default:
@@ -266,11 +296,74 @@ const Home = (props) => {
     }
   };
 
-  const handleChange = (page, filters, sorter) => {
-    console.log("Various parameters", page, filters, sorter);
-    setFilteredInfo(filters);
-    setSortedInfo(sorter);
+  const taskFailedRender = (val, { status }) => {
+    return dayjs(val).diff(dayjs()) < 0 && status !== 1 ? (
+      <span style={{ color: "red" }}>{val}</span>
+    ) : (
+      val
+    );
   };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close
+    }) => (
+      <div
+        style={{
+          padding: 8
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() =>
+            handleQuery({ other: { selectedKeys, confirm, field: dataIndex } })
+          }
+          style={{
+            marginBottom: 8,
+            display: "block"
+          }}
+        />
+      </div>
+    ),
+    // filterIcon: (filtered) => (
+    //   <SearchOutlined
+    //     style={{
+    //       color: filtered ? '#1890ff' : undefined,
+    //     }}
+    //   />
+    // ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    }
+    // render: (text) =>
+    //   searchedColumn === dataIndex ? (
+    //     <Highlighter
+    //       highlightStyle={{
+    //         backgroundColor: '#ffc069',
+    //         padding: 0,
+    //       }}
+    //       searchWords={[searchText]}
+    //       autoEscape
+    //       textToHighlight={text ? text.toString() : ''}
+    //     />
+    //   ) : (
+    //     text
+    //   ),
+  });
 
   const columns = [
     {
@@ -284,25 +377,27 @@ const Home = (props) => {
     {
       title: "标题",
       dataIndex: "title",
-      key: "title"
+      key: "title",
+      ...getColumnSearchProps("title")
     },
     {
       title: "任务内容",
       dataIndex: "content",
-      key: "content"
+      key: "content",
+      width: 200
     },
     {
       title: "任务截止日期",
       dataIndex: "gmt_expire",
-      key: "gmt_expire"
+      key: "gmt_expire",
+      render: (val, record) => taskFailedRender(val, record)
     },
-
     {
       title: "任务状态",
       dataIndex: "status",
       key: "status",
       filters: task.map((i) => ({ text: i.name, value: i.status })),
-      filteredValue: filteredInfo.status || null,
+      filteredValue: filteredInfo.status,
       onFilter: (value, record) => {
         const cond =
           value !== 999 && typeof value === "number"
@@ -310,19 +405,19 @@ const Home = (props) => {
             : true;
         return cond;
       },
-      render: (_, record) => getTags("task", record)
+      render: (_, record) => tagsRender("task", record)
     },
     {
       title: "最后更新日期",
       dataIndex: "gmt_update",
       key: "gmt_update",
-      sorter: (a, b) => (dayjs(a).diff(dayjs(b)) < 0 ? -1 : 1),
+      sorter: true,
       sortOrder: sortedInfo.columnKey === "gmt_update" ? sortedInfo.order : null
     },
     {
       title: "操作",
       key: "action",
-      render: (_, record) => getTags("action", record)
+      render: (_, record) => tagsRender("action", record)
     }
   ];
 
@@ -333,12 +428,12 @@ const Home = (props) => {
         <div style={{ marginBottom: 16 }}>
           <Button
             type='primary'
-            onClick={queryList}
+            onClick={() => handleQuery({ isClear: true })}
             style={{ marginRight: 16 }}
           >
             刷新
           </Button>
-          <Button type='default' onClick={createItem}>
+          <Button type='default' onClick={handleTaskCreate}>
             新建
           </Button>
         </div>
@@ -346,7 +441,7 @@ const Home = (props) => {
         <Table
           columns={columns}
           dataSource={list}
-          onChange={handleChange}
+          onChange={handleTableChange}
           rowClassName='todo-table-row'
         />
       </Content>

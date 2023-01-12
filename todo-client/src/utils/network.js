@@ -6,6 +6,8 @@
  * @copyright Copyright (c) 2020, Hand
  */
 
+// import Qs from "qs";
+// import Qs from "querystring";
 import axios from "axios";
 import { notification } from "antd";
 import { getUserToken, getUserInfo, clearUser } from "./index";
@@ -17,16 +19,66 @@ const token = getUserToken();
 const service = new axios.create({
   baseURL,
   timeout: 55000 // 超时时间
+  // transformRequest: [
+  //   function (data, headers) {
+  //     // 对发送的 data 进行任意转换处理
+  //     debugger;
+  //     return data;
+  //   }
+  // ]
 });
+
+// 自定义序列化 == 目前存在问题，仅支持数组，不支持嵌套对象
+const testSerializer = function (params = []) {
+  const keys = Object.keys(params);
+  const arr = [];
+  keys.forEach((item) => {
+    if (Array.isArray(params[item])) {
+      const url = params[item].map((_) => `${item}=${_}`).join("&");
+      arr.push(url);
+    } else {
+      arr.push(`${item}=${params[item]}`);
+    }
+  });
+  const result = arr.join("&");
+  console.log(result);
+  return `${result}`;
+};
 
 // 添加请求拦截器
 service.interceptors.request.use(
   function (config) {
-    // 在发送请求之前做些什么
+    // 在发送请求之前处理config
     if (user) {
       config.headers.Authorization = "Bearer " + token;
       config.headers.token = token;
     }
+
+    // //处理GET数组参数序列化
+    // if (config.method === "get") {
+    //   // config.headers["Content-Type"] = "text/plain";
+    //   // config.headers["Content-Type"] = "application/x-www-form-urlencoded";
+    //   // config.headers["Content-Type"] = "application/x-www-form-urlencoded";
+
+    //   config.paramsSerializer = {
+    //     // serialize: testSerializer,
+    //     serialize: (params) => {
+    //       debugger;
+    //       const a = qs.stringify(
+    //         {
+    //           // foo: "bar",
+    //           // baz: ["qux", "quux"],
+    //           corge: {
+    //             b: "b1"
+    //           }
+    //         },
+    //         { arrayFormat: "brackets", encode: false }
+    //       );
+    //       debugger;
+    //       return a;
+    //     }
+    //   };
+    // }
     return config;
   },
   function (error) {
@@ -106,9 +158,7 @@ service.interceptors.response.use(
 export function get(url, params) {
   return new Promise((resolve, reject) => {
     service
-      .get(url, {
-        params
-      })
+      .get(url, { params })
       .then((response) => {
         const { code, message } = response.data;
         if (message && code !== 200) {

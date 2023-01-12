@@ -23,6 +23,17 @@ craco 配置问题:
 问题：table内使用filter受控组件文字没有显示？
 原因：antd 目前的默认文案是英文，但是引用了日期控件的中文包，并且在全局配置了。
 解决：antd 提供了一个 React 组件 ConfigProvider 用于全局配置国际化文案
+
+问题：axiosError: options must be an object
+原因：axios版本升级导致，0.x升级为1.x，在请求参数数组序列化时出现
+解决：paramsSerializer内传递一个对象，key为serialize
+
+问题：get请求传参嵌套对象值参数失败 [Object Object]
+原因：自定义序列化的方式错误
+return qs.stringify(params, {: "brackets",encode: false});
+注意不能query-string库不支持解析nest object，只会解析第一层，qs支持解析多层;
+https://blog.csdn.net/huangpb123/article/details/84848026
+解决：
 ```
 
 ## todo-server
@@ -71,10 +82,10 @@ express-jwt：express-jwt 是在 jsonwebtoken 的基础上做了上层封装，�
 登录：
 前台校验且输入账密，后台校验且查库是否存在，不存在则报错
 存在则签发token返给前台。
-前台缓存token且同步保存在cookie，指定有效期。
+前台缓存token且同步保存在localStorage，指定有效期。
 (实现有效期内自动登录)
 
-退出：前台清空token和cookie内用户信息，退回至登录界面。
+退出：前台清空token和localStorage内用户信息，退回至登录界面。
 
 记住密码：
 
@@ -87,7 +98,9 @@ todoList增删改查：
 
 红星标记：
 
-查询条件筛选：
+查询条件筛选排序：
+
+数据分页：
 
 ```
 
@@ -144,25 +157,37 @@ token的加密、解密校验、mysql配置连接 查询
 2023-01-08T16:03:27.029：Sun Jan 08 2023 16:03:27 GMT+0800 (中国标准时间)
 去掉Z可成功插入
 原因：？？
+解决：
 
 接口504 ： Error occurred while trying to proxy: localhost:3000/api/task/query
 原因：？？
-解决：
+解决：重启解决
 
 问题：对于更新接口后端如何对记录进行更新，增量还是全量？
 
 问题：code: "ERR_HTTP_HEADERS_SENT"
 Cannot set headers after they are sent to the client
 原因：客户端发送一次请求的时候，服务器端给出了多次响应
-解决：
+解决：删除异常代码逻辑
 
 问题：数据设置默认的最后更新时间 返回前端的为2023-01-09T09:36:25.000Z？
-原因：？？数据库设置的时间类型为 timeStamp 类型，没有处理直接返回给前端就是这种格式的
+原因：数据库设置的时间类型为 timeStamp 类型，没有处理直接返回给前端就是这种格式的
 解决：后端程序需要处理为字符串再返回给前端
 
 问题：mySQL和程序时区问题
 http://www.ay1.cc/article/32521.html
 
+问题：nodejs如何接收get post传参
+解决：https://blog.csdn.net/weixin_50367873/article/details/122087714
+get的传参默认存放在req.query
+post的传参需要用body-parser中间件，从req.body中获取
+
+问题：存在SQL注入风险，如何预防
+解决：
+
+问题： 1064 - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'like '%test%'' at line 1
+原因：select * from sys_task where title (status=0 or status=1) and like '%test%';
+解决：sql拼写错误！！！
 6.图片跨域问题---todo
 
 

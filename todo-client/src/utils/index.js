@@ -1,5 +1,17 @@
 import globalStore from "@/store/index";
 
+export function getUserToken() {
+  // 优先从mobx内取 再从localStorage中取
+  return localStorage.getItem("token");
+}
+
+export function getUserInfo() {
+  // 优先从mobx内取 再从localStorage中取
+  const token =
+    globalStore.userInfo || JSON.parse(localStorage.getItem("userInfo"));
+  return token;
+}
+
 export function dateFormat(fmt, date) {
   let ret;
   const opt = {
@@ -23,21 +35,20 @@ export function dateFormat(fmt, date) {
   return fmt;
 }
 
-export function getUserToken() {
-  // 优先从mobx内取 再从localStorage中取
-  return localStorage.getItem("token");
-}
-
-export function getUserInfo() {
-  // 优先从mobx内取 再从localStorage中取
-  const token =
-    globalStore.userInfo || JSON.parse(localStorage.getItem("userInfo"));
-  return token;
-}
-
 export function clearUser() {
   globalStore.token = null;
   globalStore.userInfo = null;
   localStorage.removeItem("token");
   localStorage.removeItem("userInfo");
+}
+
+export function nullValueFilter(obj) {
+  for (const key in obj) {
+    if (Object.hasOwnProperty.call(obj, key)) {
+      if (obj[key] === null || obj[key] === undefined) {
+        delete obj[key];
+      }
+    }
+  }
+  return obj;
 }

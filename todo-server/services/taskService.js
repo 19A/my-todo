@@ -9,7 +9,7 @@ const {
 const md5 = require("../utils/md5"); // 加密算法
 const jwt = require("jsonwebtoken"); // 加密工具
 const boom = require("boom");
-const { body, validationResult } = require("express-validator");
+const { validationResult } = require("express-validator");
 const {
   CODE_ERROR,
   CODE_SUCCESS,
@@ -17,6 +17,14 @@ const {
   JWT_EXPIRED,
   ERROR_MESSEAGE_NO_RECORD
 } = require("../utils/constant");
+
+// // 根据前端传参动态拼接的sql type: where | order
+// function getClause({type, field}){
+//   const {name, value} = field;
+//   if(name && value){
+
+//   }
+// }
 
 // 处理查询结果
 function handleQueryResult(data) {
@@ -37,7 +45,36 @@ function query(req, res, next) {
   if (!err.isEmpty()) {
     next(boom.badRequest);
   } else {
-    const sql = `select * from sys_task`;
+    //有查询和排序则拼接对于参数
+    const {
+      query: { status, sorter, title, content }
+    } = req;
+    // 对于查询的不同字段处理拼接
+    let sql = `select * from sys_task `;
+    const [sortField = "gmt_update", order = "desc"] =
+      (sorter && sorter.split(",")) || [];
+    if (status) {
+      let statusSql = (status || []).reduce((pre, cur, idx, arr) => {
+        const isLast = idx === arr.length - 1;
+        let add = isLast ? ` status=${cur}` : ` status=${cur} or`;
+        return pre + add;
+      }, "where");
+      sql += statusSql;
+    }
+    if (title) {
+      // let _titleSql = ` title like '%${title}%'`;
+      let _titleSql = ` title='${title}'`;
+      let titleSql = sql.includes("where") ? _titleSql : " where " + _titleSql;
+      sql += titleSql;
+    }
+    if (sortField && order) {
+      let sorterSql = ` order by ${sortField} ${order}`;
+      sql += sorterSql;
+    }
+    // 根据 page, size 分页
+    // if(page && size){
+    //   let pageSql =
+    // }
     querySql(sql)
       .then((sqlRes) => {
         if (sqlRes) {
