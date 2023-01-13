@@ -39,7 +39,7 @@ const globalConfig = {
 notification.config({
   placement: "bottomRight",
   bottom: 30,
-  duration: 3,
+  duration: 2000,
   rtl: false // 一种阅读模式 right to left
 });
 

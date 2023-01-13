@@ -1,3 +1,20 @@
+/**
+ * @ ┌───┐   ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┬───┐ ┌───┬───┬───┐
+ * @ │Esc│   │ F1│ F2│ F3│ F4│ │ F5│ F6│ F7│ F8│ │ F9│F10│F11│F12│ │P/S│S L│P/B│  ┌┐    ┌┐    ┌┐
+ * @ └───┘   └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┴───┘ └───┴───┴───┘  └┘    └┘    └┘
+ * @ ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐ ┌───┬───┬───┐ ┌───┬───┬───┬───┐
+ * @ │~ `│! 1│@ 2│# 3│$ 4│% 5│^ 6│& 7│* 8│( 9│) 0│_ -│+ =│ BacSp │ │Ins│Hom│PUp│ │N L│ / │ * │ - │
+ * @ ├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤ ├───┼───┼───┤ ├───┼───┼───┼───┤
+ * @ │ Tab │ Q │ W │ E │ R │ T │ Y │ U │ I │ O │ P │{ [│} ]│ | \ │ │Del│End│PDn│ │ 7 │ 8 │ 9 │   │
+ * @ ├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤ └───┴───┴───┘ ├───┼───┼───┤ + │
+ * @ │ Caps │ A │ S │ D │ F │ G │ H │ J │ K │ L │: ;│" '│ Enter  │               │ 4 │ 5 │ 6 │   │
+ * @ ├──────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴────────┤     ┌───┐     ├───┼───┼───┼───┤
+ * @ │ Shift  │ Z │ X │ C │ V │ B │ N │ M │< ,│> .│? /│  Shift   │     │ ↑ │     │ 1 │ 2 │ 3 │   │
+ * @ ├─────┬──┴─┬─┴──┬┴───┴───┴───┴───┴───┴──┬┴───┼───┴┬────┬────┤ ┌───┼───┼───┐ ├───┴───┼───┤ E││
+ * @ │ Ctrl│    │Alt │         Space         │ Alt│    │    │Ctrl│ │ ← │ ↓ │ → │ │   0   │ . │←─┘│
+ * @ └─────┴────┴────┴───────────────────────┴────┴────┴────┴────┘ └───┴───┴───┘ └───────┴───┴───┘
+ */
+
 import { inject, observer } from "mobx-react";
 import {
   Table,
@@ -21,7 +38,7 @@ import React, {
 import dayjs from "dayjs";
 import { Header, Content } from "@/components/Page";
 import { DATETIME_MAX } from "@/utils/constants";
-import { nullValueFilter } from "@/utils/index";
+import { nullValueFilter, createPagination } from "@/utils/index";
 import {
   queryListApi,
   createItemApi,
@@ -31,7 +48,8 @@ import {
 import "./index.less";
 const FormItem = Form.Item;
 const { TextArea } = Input;
-
+// 默认分页配置
+const defaultPage = { page: 1, size: 10 };
 // 0:待办, 1: 完成, 2:删除, 999:全部
 const task = [
   {
@@ -147,11 +165,13 @@ const TaskForm = forwardRef(({ record }, ref) => {
 const Home = (props) => {
   const taskFormRef = useRef(null); // task弹框Ref
   const searchInput = useRef(null); // title搜索InputRef
+  const [searchAll, setSearchAll] = useState(false); // 查询所有
   const [list, setList] = useState([]);
   const [sortedInfo, setSortedInfo] = useState({});
   const [filteredInfo, setFilteredInfo] = useState({});
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [pagination, setPage] = useState(null);
 
   useEffect(() => {
     handleQuery();
@@ -166,10 +186,14 @@ const Home = (props) => {
     };
   };
 
+  // params 字段查询 | 字段排序 | 分页信息[默认 defaultPage]
+  // ps: 字段查询 | 字段排序 变动时重置分页
   const handleQuery = ({ params = null, isClear = false, other = {} } = {}) => {
     let query = null;
-    const { selectedKeys, confirm, field } = other;
+    const { selectedKeys, field } = other;
     const fieldValue = selectedKeys && selectedKeys[0];
+    // 查询条件、排序条件 变更后重置分页参数为默认
+    debugger;
     if (isClear) {
       setSortedInfo({});
       setFilteredInfo({});
@@ -178,11 +202,13 @@ const Home = (props) => {
     } else {
       setSearchText(fieldValue);
       setSearchedColumn(field);
-      query = { ...params, [field]: fieldValue };
+      query = { ...defaultPage, ...params, [field]: fieldValue };
     }
     const queryParams = nullValueFilter(query);
     queryListApi(queryParams).then((res) => {
+      const pageInfo = searchAll ? false : createPagination(res.data);
       setList(res.data.content || []);
+      setPage(pageInfo);
     });
   };
 
@@ -192,8 +218,10 @@ const Home = (props) => {
     setSortedInfo(sorter);
     const { field, order } = sorter;
     const { current: page, pageSize: size } = pageInfo;
-    const pageParams = { page, size };
+    // const pageParams = searchAll ? {} : { page, size };
+    const pageParams = order ? { page: 1, size: 10 } : { page, size };
     const transport = { ascend: "asc", descend: "desc" };
+    debugger;
     handleQuery({
       params: {
         ...filters,
@@ -428,11 +456,21 @@ const Home = (props) => {
         <div style={{ marginBottom: 16 }}>
           <Button
             type='primary'
-            onClick={() => handleQuery({ isClear: true })}
+            onClick={() => handleQuery()}
             style={{ marginRight: 16 }}
           >
-            刷新
+            查询分页
           </Button>
+          {/* <Button
+            type='primary'
+            onClick={() => {
+              setSearchAll(true);
+              handleQuery({ isClear: true });
+            }}
+            style={{ marginRight: 16 }}
+          >
+            查询所有
+          </Button> */}
           <Button type='default' onClick={handleTaskCreate}>
             新建
           </Button>
@@ -441,6 +479,7 @@ const Home = (props) => {
         <Table
           columns={columns}
           dataSource={list}
+          pagination={pagination}
           onChange={handleTableChange}
           rowClassName='todo-table-row'
         />

@@ -13,7 +13,7 @@ import { notification } from "antd";
 import { getUserToken, getUserInfo, clearUser } from "./index";
 
 const baseURL = "/api";
-
+const ERROR_DURATION = 2000;
 const user = getUserInfo();
 const token = getUserToken();
 const service = new axios.create({
@@ -106,7 +106,7 @@ service.interceptors.response.use(
     if (message && code !== 200) {
       const msg =
         typeof message === "string" ? message : JSON.stringify(message);
-      notification.error({ message: msg, duration: 4500 });
+      notification.error({ message: msg, duration: ERROR_DURATION });
     }
     switch (error.response.status) {
       // 401: 未登录
@@ -164,7 +164,7 @@ export function get(url, params) {
         if (message && code !== 200) {
           const msg =
             typeof message === "string" ? message : JSON.stringify(message);
-          notification.error({ message: msg, duration: 4500 });
+          notification.error({ message: msg, duration: ERROR_DURATION });
           resolve();
         } else {
           resolve(response.data);
@@ -187,7 +187,7 @@ export function post(url, params) {
         if (message && code !== 200) {
           const msg =
             typeof message === "string" ? message : JSON.stringify(message);
-          notification.error({ message: msg, duration: 4500 });
+          notification.error({ message: msg, duration: ERROR_DURATION });
           resolve();
         } else {
           resolve(response.data);

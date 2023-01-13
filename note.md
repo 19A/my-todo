@@ -33,7 +33,11 @@ craco 配置问题:
 return qs.stringify(params, {: "brackets",encode: false});
 注意不能query-string库不支持解析nest object，只会解析第一层，qs支持解析多层;
 https://blog.csdn.net/huangpb123/article/details/84848026
-解决：
+解决：X
+
+问题：
+原因：
+解决：查询条件、排序条件 变更后重置分页参数为默认
 ```
 
 ## todo-server
@@ -132,7 +136,12 @@ token的加密、解密校验、mysql配置连接 查询
 
 4.客户端请求服务器需要代理。衍生的跨域问题同样需要服务端处理(暂时为前端配置代理端口处理)
 
-5.数据库相关
+5.
+现象：token失效时，再登录发现query接口还是会校验失败？！
+原因：
+解决：
+
+10.数据库相关
 查询数据库报错： connect ETIMEDOUT?
 现象：querySql方法查询连接mySQL超时报错
 解决：dbConfig内数据库密码配置错误！
@@ -188,7 +197,12 @@ post的传参需要用body-parser中间件，从req.body中获取
 问题： 1064 - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'like '%test%'' at line 1
 原因：select * from sys_task where title (status=0 or status=1) and like '%test%';
 解决：sql拼写错误！！！
-6.图片跨域问题---todo
+
+问题：第二页分页时返回 data:null,
+原因：MySql 中 count 与 limit 混用的后果，count(*) 返回的是一条数据，limit功能是限制数据返回
+解决：totalSql中去除limit条件
+
+6.图片跨域问题 - todo
 
 
 ```

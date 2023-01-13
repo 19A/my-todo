@@ -6,6 +6,7 @@ const {
   resolveData,
   rejectError
 } = require("../utils/index");
+const Util = require("util");
 const md5 = require("../utils/md5"); // 加密算法
 const jwt = require("jsonwebtoken"); // 加密工具
 const boom = require("boom");
@@ -45,14 +46,16 @@ function query(req, res, next) {
   if (!err.isEmpty()) {
     next(boom.badRequest);
   } else {
-    //有查询和排序则拼接对于参数
+    //处理查询参数
     const {
-      query: { status, sorter, title, content }
+      query: { status, sorter, title, page: _page, size: _size }
     } = req;
-    // 对于查询的不同字段处理拼接
-    let sql = `select * from sys_task `;
+    const page = Number(_page);
+    const size = Number(_size);
     const [sortField = "gmt_update", order = "desc"] =
       (sorter && sorter.split(",")) || [];
+    // 对于查询的不同字段处理拼接
+    let sql = `select * from sys_task `;
     if (status) {
       let statusSql = (status || []).reduce((pre, cur, idx, arr) => {
         const isLast = idx === arr.length - 1;
@@ -62,8 +65,7 @@ function query(req, res, next) {
       sql += statusSql;
     }
     if (title) {
-      // let _titleSql = ` title like '%${title}%'`;
-      let _titleSql = ` title='${title}'`;
+      let _titleSql = ` title like '%${title}%'`;
       let titleSql = sql.includes("where") ? _titleSql : " where " + _titleSql;
       sql += titleSql;
     }
@@ -71,16 +73,28 @@ function query(req, res, next) {
       let sorterSql = ` order by ${sortField} ${order}`;
       sql += sorterSql;
     }
-    // 根据 page, size 分页
-    // if(page && size){
-    //   let pageSql =
-    // }
-    querySql(sql)
-      .then((sqlRes) => {
+    // 根据 page, size 分页 select * from table limit (page_num-1)*page_size,page_size;
+    if (page && size) {
+      let pageSql = ` limit ${(page - 1) * size}, ${size}`;
+      sql += pageSql;
+    }
+    // count(*) 需要去除limit字段
+    const total = sql.replace("*", "count(*)");
+    const limit = total.match(/(.+(?=limit))/);
+    const totalSql = limit ? limit[0] : total;
+    debugger;
+    Promise.all([querySql(sql), querySql(totalSql)])
+      .then(([sqlRes, totalRes]) => {
         if (sqlRes) {
-          const handleResult = handleQueryResult(sqlRes);
+          const totalElements = totalRes[0]["count(*)"];
+          const totalPages = size ? Math.ceil(totalElements / size) : null;
+          const content = handleQueryResult(sqlRes) || [];
           resolveData(res, {
-            content: handleResult || []
+            size,
+            page,
+            content,
+            totalPages,
+            totalElements
           });
         }
       })

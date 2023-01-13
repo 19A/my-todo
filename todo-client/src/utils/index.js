@@ -1,5 +1,7 @@
 import globalStore from "@/store/index";
 
+const isNumber = (num) => typeof num === "number";
+
 export function getUserToken() {
   // 优先从mobx内取 再从localStorage中取
   return localStorage.getItem("token");
@@ -51,4 +53,23 @@ export function nullValueFilter(obj) {
     }
   }
   return obj;
+}
+
+export function createPagination(data) {
+  //   page: 1
+  // size: 10
+  // totalElements: 13
+  // totalPages: 2
+
+  const { page, size, totalElements } = data;
+  return {
+    pageSize: Number(size) || Number(data.pageSize),
+    current: isNumber(Number(page)) ? Number(page) : Number(data.current),
+    // 每页大小
+    total: isNumber(totalElements) ? Number(totalElements) : Number(data.total)
+    // showTotal: totalRender
+    // showQuickJumper: true,
+    // showSizeChanger: true,
+    // pageSizeOptions: _isArray(list) && !_isEmpty(list) ? list : PAGE_SIZE_OPTIONS,
+  };
 }
