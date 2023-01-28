@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
@@ -16,12 +15,7 @@ const defaultFormStyle = {
 const defaultFormConfig = {
   autoComplete: "off"
 };
-const defaultFormItemStyle = {
-  wrapperCol: {
-    offset: 8,
-    span: 16
-  }
-};
+
 /*eslint-disable*/
 @inject("store")
 @observer

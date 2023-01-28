@@ -6,8 +6,10 @@
     "express": "^4.18.2",
     "express-jwt": "6.1.1",
     "express-validator": "^6.14.2",
+    "global": "^4.4.0",
     "jsonwebtoken": "^8.5.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "pm2": "^5.2.2"
   },
   "scripts": {
     "normal": "node app.js",

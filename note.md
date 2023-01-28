@@ -14,6 +14,9 @@
 craco 配置问题:
 支持less：参考解决 https://juejin.cn/post/7049309953898577957
 
+问题：https://github.com/babel/babel/issues/13292
+
+
 问题：mobx对象更新失效？
 原因：取出可观察对象重新赋值修复肯定不会生效，需要直接对最终观察属性进行修改！
 
@@ -73,6 +76,9 @@ body-parser：对 post 请求的请求体进行解析的 express 中间件。
 boom：处理程序异常状态，boom 是一个兼容 HTTP 的错误对象，他提供了一些标准的 HTTP 错误，比如 400(参数错误)等。
 jsonwebtoken：基于jwt的概念实现安全的加密方案库，实现加密 token 和解析 token 的功能。
 express-jwt：express-jwt 是在 jsonwebtoken 的基础上做了上层封装，基于 Express 框架下认证 jwt 的中间件，来实现 jwt 的认证功能。
+PM2: 是 Node 进程管理工具，可以利用它来简化很多 Node 应用管理的繁琐任务，如性能监控、自动重启、负载均衡等，而且使用非常简单。
+https://www.cnblogs.com/chyingp/p/pm2-documentation.html
+
 ```
 
 ```

@@ -4,6 +4,10 @@ import Category from "../pages/Category";
 import Products from "../pages/Products";
 export const routers = [
   {
+    path: "/",
+    component: Home
+  },
+  {
     path: "/home",
     exact: true,
     component: Home

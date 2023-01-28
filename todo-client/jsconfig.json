@@ -12,9 +12,7 @@
       "@store/*": ["src/store/*"],
       "@utils/*": ["src/utils/*"]
     },
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true
+    "experimentalDecorators": true
   },
   "exclude": ["node_modules", "build"]
 }

@@ -218,7 +218,6 @@ const Home = (props) => {
     setSortedInfo(sorter);
     const { field, order } = sorter;
     const { current: page, pageSize: size } = pageInfo;
-    // const pageParams = searchAll ? {} : { page, size };
     const pageParams = order ? { page: 1, size: 10 } : { page, size };
     const transport = { ascend: "asc", descend: "desc" };
     debugger;
@@ -474,6 +473,9 @@ const Home = (props) => {
           <Button type='default' onClick={handleTaskCreate}>
             新建
           </Button>
+          <a href='http://1.117.165.71' target='_blank' rel='noreferrer'>
+            链接
+          </a>
         </div>
         <p>globalToken: {props.store.token}</p>
         <Table

@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Layout } from "antd";
 import Login from "./Login";
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Footer, Content } = Layout;
 const Index = () => (
   <Layout>
     <Header>Header</Header>
