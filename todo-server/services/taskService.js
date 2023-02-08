@@ -82,7 +82,7 @@ function query(req, res, next) {
     const total = sql.replace("*", "count(*)");
     const limit = total.match(/(.+(?=limit))/);
     const totalSql = limit ? limit[0] : total;
-    debugger;
+    // debugger;
     Promise.all([querySql(sql), querySql(totalSql)])
       .then(([sqlRes, totalRes]) => {
         if (sqlRes) {

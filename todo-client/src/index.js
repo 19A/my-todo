@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client";
 import { ConfigProvider, notification } from "antd";
 // import locale from "antd/es/date-picker/locale/zh_CN";
 import zhCN from "antd/locale/zh_CN";
-import { Route, Switch, BrowserRouter } from "react-router-dom";
+import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
 
 import globalStore from "./store/index";
 import { routers } from "./routers/index";
@@ -39,24 +39,24 @@ const globalConfig = {
 notification.config({
   placement: "bottomRight",
   bottom: 30,
-  duration: 2000,
+  duration: 2,
   rtl: false // 一种阅读模式 right to left
 });
 
 const App = (app) => {
-  // console.log("app", app);
   return (
     <Switch>
       {routers.map(({ component, path, ...other }) => {
         return (
           <Route
-            key={path}
-            component={component}
-            path={path}
             {...other}
+            key={path}
+            path={path}
+            component={component}
           ></Route>
         );
       })}
+      <Redirect from='/' to='/home' exact />
     </Switch>
   );
 };

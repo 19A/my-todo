@@ -65,7 +65,7 @@ module.exports = {
       }
     }
   ],
-  // 服务器代理配置
+  // 服务器代理配置 https://www.jianshu.com/p/6e824b668a0d
   devServer: {
     proxy: {
       "/api": {

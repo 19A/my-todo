@@ -36,11 +36,8 @@ craco 配置问题:
 return qs.stringify(params, {: "brackets",encode: false});
 注意不能query-string库不支持解析nest object，只会解析第一层，qs支持解析多层;
 https://blog.csdn.net/huangpb123/article/details/84848026
-解决：X
+解决：
 
-问题：
-原因：
-解决：查询条件、排序条件 变更后重置分页参数为默认
 ```
 
 ## todo-server
@@ -226,5 +223,39 @@ token鉴权： axios请求拦截器被设置token失败？完成
 前端排序：单字段 多字段:
 后端排序:
 后端分页:
+```
 
+### 打包部署问题
+
+```
+1.node部署后启动成功   但是 访问curl:localhost:8000
+报错 curl: (7) Failed connect to localhost:8888; Connection refused
+原因：node在容器内启动端口为8888 , dockerFile文件内暴露为3000 ，容器启动的映射为 3000:3000
+解决：必须暴露启动端口 8888
+
+2.web访问端口需要代理问题
+curl:localhost:8888成功后  从http://1.117.165.71:8889/访问端口 404nginx
+原因：端口不一致， 需要nginx进行端口代理
+解决：注意代理地址时先在nginx上确认是否可以访问到代理的地址
+
+3.跨域问题
+解决一：代码内使用cors插件处理
+解决二：nginx配置内添加 允许跨域配置。
+
+
+5.前端路由失效 和 界面刷新404问题
+原因：history模式下的浏览器的路由是真实的资源访问地址，在访问前端路由时应确保返回index.html的内容
+解决刷新页面404
+nginx/conf.d/default.conf内添加
+try_files $uri $uri/ /index.html;
+https://juejin.cn/post/7036569799140311077
+解决路由失效
+解决一：更为hash模式 模式通用性好，不依赖服务器的配置，省心省力，但是缺点是不够优雅
+解决二：https://www.cnblogs.com/imgss/p/11703422.html
+
+6.前端静态资源访问失败
+
+
+原因：
+解决：
 ```

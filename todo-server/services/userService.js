@@ -104,7 +104,7 @@ function register(req, res, next) {
               }
             })
             .catch((err) => {
-              debugger;
+              // debugger;
               rejectError(res, err);
             });
         }
@@ -124,7 +124,7 @@ function modifyPwd(req, res, next) {
   } else {
     let { username, oldPwd, newPwd } = req.body;
     // 校验用户名、密码
-    debugger;
+    // debugger;
     oldPwd = md5(oldPwd);
     validateUser(username, oldPwd).then((user) => {
       if (user) {

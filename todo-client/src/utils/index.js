@@ -4,7 +4,7 @@ const isNumber = (num) => typeof num === "number";
 
 export function getUserToken() {
   // 优先从mobx内取 再从localStorage中取
-  return localStorage.getItem("token");
+  return globalStore.token || localStorage.getItem("token");
 }
 
 export function getUserInfo() {

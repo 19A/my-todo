@@ -13,9 +13,7 @@ import { notification } from "antd";
 import { getUserToken, getUserInfo, clearUser } from "./index";
 
 const baseURL = "/api";
-const ERROR_DURATION = 2000;
-const user = getUserInfo();
-const token = getUserToken();
+const ERROR_DURATION = 2;
 const service = new axios.create({
   baseURL,
   timeout: 55000 // 超时时间
@@ -49,9 +47,9 @@ const testSerializer = function (params = []) {
 service.interceptors.request.use(
   function (config) {
     // 在发送请求之前处理config
-    if (user) {
-      config.headers.Authorization = "Bearer " + token;
-      config.headers.token = token;
+    if (getUserInfo()) {
+      config.headers.Authorization = "Bearer " + getUserToken();
+      config.headers.token = getUserToken();
     }
 
     // //处理GET数组参数序列化
@@ -117,14 +115,12 @@ service.interceptors.response.use(
           window.location.pathname = "/login";
         }, 10000);
         break;
-      // 403 token过期
-      // 登录过期对用户进行提示
-      // 清除本地token和清空vuex中token对象
-      // 跳转登录页面
       case 403:
-        window.alert("登录过期，请重新登录");
-        // 清除用户信息
         clearUser();
+        debugger;
+        window.alert("登录过期，请重新登录");
+        // 403 token过期 对用户进行提示
+        // 清除本地token和清空vuex中token对象
         // 跳转登录页面，并将要浏览的页面fullPath传过去，登录成功后跳转需要访问的页面
         setTimeout(() => {
           window.location.pathname = "/login";
@@ -134,9 +130,8 @@ service.interceptors.response.use(
           //     redirect: router.currentRoute.fullPath
           //   }
           // });
-        }, 1000);
+        }, 100000);
         break;
-
       // 404请求不存在
       case 404:
         // Toast({
@@ -146,6 +141,10 @@ service.interceptors.response.use(
         // });
         break;
       default:
+        notification.error({
+          message: error.response.statusText,
+          duration: ERROR_DURATION
+        });
     }
     return Promise.reject(error);
   }

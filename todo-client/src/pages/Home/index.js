@@ -16,17 +16,7 @@
  */
 
 import { inject, observer } from "mobx-react";
-import {
-  Table,
-  Button,
-  Space,
-  Tag,
-  notification,
-  Modal,
-  Form,
-  Input,
-  DatePicker
-} from "antd";
+import { Table, Button, Tag, Modal, Form, Input, DatePicker } from "antd";
 import React, {
   Fragment,
   useEffect,
@@ -118,12 +108,10 @@ const modalConfig = {
 
 const TaskForm = forwardRef(({ record }, ref) => {
   const formRef = useRef();
-  // const formE = Form.useForm();
   const { title, gmt_expire, content } = record;
   useImperativeHandle(ref, () => {
     return { formRef };
   });
-  console.log("record", record);
   return (
     <Form
       ref={formRef}
@@ -220,7 +208,6 @@ const Home = (props) => {
     const { current: page, pageSize: size } = pageInfo;
     const pageParams = order ? { page: 1, size: 10 } : { page, size };
     const transport = { ascend: "asc", descend: "desc" };
-    debugger;
     handleQuery({
       params: {
         ...filters,
@@ -234,14 +221,13 @@ const Home = (props) => {
     const formProps = {
       record: {},
       ref: taskFormRef
-      // ref: (e) => (taskFormRef.current = e)
     };
     Modal.confirm({
       ...modalConfig,
       title: "任务新建",
       content: <TaskForm {...formProps} />,
       onOk: async () => {
-        console.log("taskFormRef", taskFormRef);
+        // console.log("taskFormRef", taskFormRef);
         const formEntity = taskFormRef.current.formRef.current;
         const validatesRes = await formEntity.validateFields();
         if (!validatesRes) return Promise.reject();
@@ -362,13 +348,6 @@ const Home = (props) => {
         />
       </div>
     ),
-    // filterIcon: (filtered) => (
-    //   <SearchOutlined
-    //     style={{
-    //       color: filtered ? '#1890ff' : undefined,
-    //     }}
-    //   />
-    // ),
     onFilter: (value, record) =>
       record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
     onFilterDropdownOpenChange: (visible) => {
@@ -376,20 +355,6 @@ const Home = (props) => {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     }
-    // render: (text) =>
-    //   searchedColumn === dataIndex ? (
-    //     <Highlighter
-    //       highlightStyle={{
-    //         backgroundColor: '#ffc069',
-    //         padding: 0,
-    //       }}
-    //       searchWords={[searchText]}
-    //       autoEscape
-    //       textToHighlight={text ? text.toString() : ''}
-    //     />
-    //   ) : (
-    //     text
-    //   ),
   });
 
   const columns = [
@@ -458,7 +423,7 @@ const Home = (props) => {
             onClick={() => handleQuery()}
             style={{ marginRight: 16 }}
           >
-            查询分页
+            查询
           </Button>
           {/* <Button
             type='primary'
@@ -473,11 +438,11 @@ const Home = (props) => {
           <Button type='default' onClick={handleTaskCreate}>
             新建
           </Button>
-          <a href='http://1.117.165.71' target='_blank' rel='noreferrer'>
-            链接
+          <a href='http://1.117.165.71:8889' target='_blank' rel='noreferrer'>
+            外网
           </a>
         </div>
-        <p>globalToken: {props.store.token}</p>
+        <p>token: {props.store.token}</p>
         <Table
           columns={columns}
           dataSource={list}

@@ -4,14 +4,9 @@ import Category from "../pages/Category";
 import Products from "../pages/Products";
 export const routers = [
   {
-    path: "/",
-    component: Home
-  },
-  {
     path: "/home",
-    exact: true,
+    authorized: true,
     component: Home
-    // component: () => import("../pages/Home")
   },
   {
     path: "/login",
@@ -19,12 +14,11 @@ export const routers = [
   },
   {
     path: "/category",
-    exact: true,
     component: Category
   },
   {
     path: "/products",
-    exact: true,
+    authorized: true,
     component: Products
   }
 ];
