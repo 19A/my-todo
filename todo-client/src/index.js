@@ -4,7 +4,13 @@ import ReactDOM from "react-dom/client";
 import { ConfigProvider, notification } from "antd";
 // import locale from "antd/es/date-picker/locale/zh_CN";
 import zhCN from "antd/locale/zh_CN";
-import { Route, Switch, BrowserRouter, Redirect } from "react-router-dom";
+import {
+  Route,
+  Switch,
+  BrowserRouter,
+  Redirect,
+  HashRouter
+} from "react-router-dom";
 
 import globalStore from "./store/index";
 import { routers } from "./routers/index";
@@ -63,13 +69,13 @@ const App = (app) => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <BrowserRouter>
+  <HashRouter>
     <Provider store={globalStore}>
       <ConfigProvider {...globalConfig}>
         <App />
       </ConfigProvider>
     </Provider>
-  </BrowserRouter>
+  </HashRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function
