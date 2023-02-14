@@ -1,5 +1,4 @@
 ## todo-client
-
 ### 结构
 
 ```
@@ -7,7 +6,7 @@
 |─components            // 通用组件
 │─pages                 // 页面
 |       Login
-|       Home
+|       ...
 │─routers               // 路由文件
 |       index.js
 │─services               // 请求Api
@@ -17,22 +16,9 @@
 │─utils
 |  index.js
 |  constants
+|  network.js           // axios请求拦截封装
 |
-│  package.json                       // npm包管理所需模块及配置信息
-├─db
-│      dbConfig.js                    // mysql数据库基础配置
-├─routes
-│      index.js                       // 初始化路由信息，自定义全局异常处理
-│      tasks.js                       // 任务路由模块
-│      users.js                       // 用户路由模块
-├─services
-│      taskService.js                 // 业务逻辑处理 - 任务相关接口
-│      userService.js                 // 业务逻辑处理 - 用户相关接口
-└─utils
-        constant.js                   // 自定义常量
-        index.js                      // 封装连接mysql模块
-        md5.js                        // 后端封装md5方法
-        user-jwt.js                   // jwt-token验证和解析函数
+│  package.json         // npm包管理所需模块及配置信息
 技术栈：
 使用 react, react-router, mobx，antd v5，craco，axios, less
 使用 craco 去覆盖cli内部webpack配置，不用 rewired暴露 webpack
@@ -254,9 +240,9 @@ token鉴权： axios请求拦截器被设置token失败？完成
 
 ## docker 部署
 
-### 准备
+### 单独部署
 
-### 部署 web
+#### 部署 web
 
 ```
 1.拉取镜像
@@ -273,7 +259,7 @@ docker run --name myNginx -d -p 8889:80 --restart=always
 需要修改 nginx 配置则修改 nginx 配置文件 default.conf
 ```
 
-### 部署 node
+#### 部署 node
 
 1.在项目根目录新建 Dockerfile
 vim Doockerfile
@@ -298,9 +284,9 @@ CMD yarn start
 docker build -t node .
 docker images 
 3.启动容器
-docker run -d --restart=always --name node -p 3000:8888 node
+docker run -d --restart=always --name my-node --restart='always' -p 3000:8888 my-node
 
-### 部署 mysql
+#### 部署 mysql
 
 ```
 1.拉取镜像
@@ -314,11 +300,38 @@ docker exec -it mysql /bin/bash
 5.进入mysql
 mysql -u root -p;
 6.进行mysql操作
+-- 创建数据库
 CREATE DATABASE `my_test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+-- 创建用户表
+CREATE TABLE `sys_user` (
+    `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '唯一标识',
+    `username` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '登录帐号，邮箱或手机号',
+    `password` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '登录密码',
+    `nickname` VARCHAR(50) NULL DEFAULT '' COMMENT '昵称',
+    `avator` VARCHAR(50) NULL DEFAULT '' COMMENT '用户头像',
+`sex` VARCHAR(20) NULL DEFAULT '' COMMENT '性别：u:未知,  m:男,  w:女',
+`gmt_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+`gmt_modify` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`) USING BTREE,
+	  UNIQUE KEY `username_UNIQUE` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='用户表';
+-- 创建任务表
+CREATE TABLE `sys_task` (
+    `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '唯一标识',
+    `title` VARCHAR(50) NOT NULL DEFAULT '' COMMENT '任务名称',
+    `content` VARCHAR(64) NOT NULL DEFAULT '' COMMENT '任务内容',
+`is_major` TINYINT(1) NULL DEFAULT 0 COMMENT '是否收藏1|0',
+`status` TINYINT(2) NULL DEFAULT 0 COMMENT '单据状态 0:待办 1: 完成2:删除 999:全部',
+`gmt_create` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+`gmt_expire` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '截止时间',
+`gmt_update` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+    PRIMARY KEY (`id`) USING BTREE,
+	  UNIQUE KEY `title_UNIQUE` (`title`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 COMMENT='任务表';
 
 ```
 
-### 打包部署问题
+#### 打包部署问题
 
 ```
 1.node部署后启动成功   但是 访问curl:localhost:8000
@@ -354,4 +367,14 @@ https://juejin.cn/post/7036569799140311077
 原因：Dockerfile文件内指定的node版本没有curl
 解决：指定最新的node镜像
 
+8.报错
+unable to prepare context: unable to evaluate symlinks in Dockerfile path: lstat /data/node/Dockerfile: no such file or directory
+原因：DockerFile应该拼写为Dockerfile
+
+9.node一直连接不上mysql
+报错：Client does not support authentication protocol requested by server; 
+原因：docker使用的最新的mysql，不支持旧的密码认证模式
+解决：降为和本地一致 5.7 版本的就行了。
 ```
+
+### docker compose部署

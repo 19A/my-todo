@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import { Dropdown, Modal, Form, Input } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Space } from "antd";
+import defaultAvatar from '@/assets/avatar.jpg';
 import { pwdModifyApi } from "@/services";
 // const { Header as AntHeader, Content as AntHeader } = Layout;
 
@@ -66,10 +67,10 @@ export class Header extends Component {
           <Item label='name' name='username' rules={[{ required: true }]}>
             <Input.Password />
           </Item>
-          <Item label='old' name='oldPwd' rules={[{ required: true }]}>
+          <Item label='old' name='password' rules={[{ required: true }]}>
             <Input.Password />
           </Item>
-          <Item label='new' name='newPwd' rules={[{ required: true }]}>
+          <Item label='new' name='confirmPwd' rules={[{ required: true }]}>
             <Input.Password />
           </Item>
         </Form>
@@ -132,7 +133,7 @@ export class Header extends Component {
                   alt='用户头像'
                   referrer='no-referrer'
                   className='user-avatar'
-                  src={avator}
+                  src={defaultAvatar}
                 />
                 <DownOutlined />
               </Space>
