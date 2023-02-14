@@ -1,7 +1,38 @@
 ## todo-client
 
+### 结构
+
 ```
-文件结构：...
+|─assets                // 静态资源、样式
+|─components            // 通用组件
+│─pages                 // 页面
+|       Login
+|       Home
+│─routers               // 路由文件
+|       index.js
+│─services               // 请求Api
+|       index.js
+│─store
+|       index.js        // mobx存放数据
+│─utils
+|  index.js
+|  constants
+|
+│  package.json                       // npm包管理所需模块及配置信息
+├─db
+│      dbConfig.js                    // mysql数据库基础配置
+├─routes
+│      index.js                       // 初始化路由信息，自定义全局异常处理
+│      tasks.js                       // 任务路由模块
+│      users.js                       // 用户路由模块
+├─services
+│      taskService.js                 // 业务逻辑处理 - 任务相关接口
+│      userService.js                 // 业务逻辑处理 - 用户相关接口
+└─utils
+        constant.js                   // 自定义常量
+        index.js                      // 封装连接mysql模块
+        md5.js                        // 后端封装md5方法
+        user-jwt.js                   // jwt-token验证和解析函数
 技术栈：
 使用 react, react-router, mobx，antd v5，craco，axios, less
 使用 craco 去覆盖cli内部webpack配置，不用 rewired暴露 webpack
@@ -42,8 +73,9 @@ https://blog.csdn.net/huangpb123/article/details/84848026
 
 ## todo-server
 
+### 结构
+
 ```
-文件结构
 │  app.js                             // 入口文件
 │  ecosystem.config.js                // pm2默认配置文件
 │  package.json                       // npm包管理所需模块及配置信息
@@ -213,16 +245,77 @@ post的传参需要用body-parser中间件，从req.body中获取
 #### TODO
 
 ```
-vscode寻找别名路径文件失败：
-如何重写 antd的notification方法：
-
+vscode寻找别名路径文件失败
 语言国际化
 token鉴权： axios请求拦截器被设置token失败？完成
 接口风格restful化:
-物理删除变为逻辑删除:
-前端排序：单字段 多字段:
-后端排序:
-后端分页:
+物理删除修正为逻辑删除:
+```
+
+## docker 部署
+
+### 准备
+
+### 部署 web
+
+```
+1.拉取镜像
+ docker pull nginx
+2.创建挂载目录
+mkdir -p /data/nginx/{nginx.conf,conf.d,html,logs}
+(文件内容保持和 nginx 容器中映射目录内容一致即可) 3.启动容器
+docker run --name myNginx -d -p 8889:80 --restart=always
+-v /data/nginx/html:/usr/share/nginx/html
+-v /data/nginx/nginx.conf:/etc/nginx/nginx.conf
+-v /data/nginx/conf.d:/etc/nginx/conf.d
+ -v /data/nginx/logs:/var/log/nginx nginx
+
+需要修改 nginx 配置则修改 nginx 配置文件 default.conf
+```
+
+### 部署 node
+
+1.在项目根目录新建 Dockerfile
+vim Doockerfile
+
+```
+FROM node
+
+WORKDIR /node
+COPY . /node
+
+RUN yarn config set registry "https://registry.npm.taobao.org/"
+
+RUN yarn
+
+EXPOSE 3000 8888
+
+CMD yarn start
+
+```
+
+2.构建本地镜像
+docker build -t node .
+docker images 
+3.启动容器
+docker run -d --restart=always --name node -p 3000:8888 node
+
+### 部署 mysql
+
+```
+1.拉取镜像
+docker pull mysql
+2.创建挂载目录
+mkdir -p /root/mysql/data /root/mysql/logs /root/mysql/conf
+3.启动容器
+docker run --restart=always -p 3306:3306 --name mysql -v /root/mysql/conf:/etc/mysql/conf.d -v /root/mysql/logs:/var/log/mysql -v /root/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mysql -d mysql
+4.进入mysql容器
+docker exec -it mysql /bin/bash
+5.进入mysql
+mysql -u root -p;
+6.进行mysql操作
+CREATE DATABASE `my_test` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
 ```
 
 ### 打包部署问题
@@ -254,8 +347,11 @@ https://juejin.cn/post/7036569799140311077
 解决二：https://www.cnblogs.com/imgss/p/11703422.html
 
 6.前端静态资源访问失败
-
-
 原因：
 解决：
+
+7.进入node容器内, curl not found
+原因：Dockerfile文件内指定的node版本没有curl
+解决：指定最新的node镜像
+
 ```

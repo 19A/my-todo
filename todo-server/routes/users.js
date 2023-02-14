@@ -18,8 +18,8 @@ const vaildatorForLogin = [
 // 注册校验
 const validatorForRegister = [
   body("username").isString().withMessage("用户名类型错误"),
-  body("oldPwd").isString().withMessage("旧密码类型错误"),
-  body("newPwd").isString().withMessage("新密码类型错误")
+  body("password").isString().withMessage("旧密码类型错误"),
+  body("confirmPwd").isString().withMessage("新密码类型错误")
 ];
 
 // ----路由------

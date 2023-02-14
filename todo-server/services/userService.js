@@ -122,15 +122,15 @@ function modifyPwd(req, res, next) {
     const [{ msg }] = err.errors;
     next(boom.badRequest(msg));
   } else {
-    let { username, oldPwd, newPwd } = req.body;
+    let { username, password, confirmPwd } = req.body;
     // 校验用户名、密码
     // debugger;
-    oldPwd = md5(oldPwd);
-    validateUser(username, oldPwd).then((user) => {
+    password = md5(password);
+    validateUser(username, password).then((user) => {
       if (user) {
-        if (newPwd) {
-          newPwd = md5(newPwd);
-          const sql = `update sys_user set password='${newPwd}' where username='${username}' and password='${oldPwd}'`;
+        if (confirmPwd) {
+          confirmPwd = md5(confirmPwd);
+          const sql = `update sys_user set password='${confirmPwd}' where username='${username}' and password='${password}'`;
           querySql(sql)
             .then((updateRes) => {
               if (updateRes.constructor.name !== "OkPacket") {

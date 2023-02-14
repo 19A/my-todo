@@ -117,7 +117,6 @@ service.interceptors.response.use(
         break;
       case 403:
         clearUser();
-        debugger;
         window.alert("登录过期，请重新登录");
         // 403 token过期 对用户进行提示
         // 清除本地token和清空vuex中token对象

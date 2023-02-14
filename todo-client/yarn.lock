@@ -3485,7 +3485,7 @@ combined-stream@^1.0.8:
   dependencies:
     delayed-stream "~1.0.0"
 
-commander@^2.20.0:
+commander@^2.20.0, commander@^2.9.0:
   version "2.20.3"
   resolved "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz#fd485e84c03eb4881c20722ba48035e8531aeb33"
   integrity sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==
@@ -9575,6 +9575,13 @@ tr46@^2.1.0:
   integrity sha512-15Ih7phfcdP5YxqiB+iDtLoaTz4Nd35+IiAv0kQ5FNKHzXgdWqPoTIqEDDJmXceQt4JZk6lVPT8lnDlPpGDppw==
   dependencies:
     punycode "^2.1.1"
+
+treer@^1.0.4:
+  version "1.0.4"
+  resolved "http://nexus.going-link.com/repository/zhenyun-npm-group/treer/-/treer-1.0.4.tgz#3b5ff47baec11c97476b8b7712da71cf459d52a3"
+  integrity sha512-Q2oAOOxzGYq+/KoKT1bZSSwDL4Y4WYukjiYBAn6GrNlt1xKKf5JS216dsSzkPDoYTHA9CXdbYkehUG7F1JT+5A==
+  dependencies:
+    commander "^2.9.0"
 
 tryer@^1.0.1:
   version "1.0.1"

@@ -43,6 +43,7 @@ function handleQueryResult(data) {
 // 查询
 function query(req, res, next) {
   const err = validationResult(req);
+  debugger;
   if (!err.isEmpty()) {
     next(boom.badRequest);
   } else {
