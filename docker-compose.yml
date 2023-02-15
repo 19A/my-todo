@@ -1,0 +1,55 @@
+version: '3.1'
+services:
+  todo-client:
+    image:  nginx:latest #镜像命名
+    container_name: nginx-container
+    restart: always
+    ports:
+      - "8889:80"
+    networks:
+      data_security:
+        ipv4_address: 192.128.0.8
+    privileged: true      # 这个必须要，解决nginx的文件调用的权限问题
+    volumes:   
+      - ./data/nginx/html:/usr/share/nginx/html           # 前端打包文件
+      - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf     # nginx配置文件 
+      - ./data/nginx/conf.d:/etc/nginx/conf.d  
+      - ./data/nginx/logs:/var/log/nginx nginx            # nginx日志
+  node:
+    build: '.'  # 表示以当前目录下的Dockerfile开始构建镜像
+    image: todo/node-image #从当前目录下todo-client子目录内找Dockerfile生成image
+    container_name: node-container
+    ports:
+      - "3000:8888"
+    restart: always
+    environment: 
+      TZ: Asia/Shanghai # 指定时区
+    networks:
+      data_security:
+        ipv4_address: 192.128.0.4
+  mysql:
+    restart: always # docker启动时 容器自动重启
+    image: mysql:5.7.30 # 指定镜像路径
+    container_name: mysql-container # 容器名称
+    environment:
+      - TZ=Asia/Shanghai                        # 指定时区
+      - MYSQL_ROOT_PASSWORD=mysql               #数据库初始话为root用户设置的默认密码
+      - MYSQL_DATABASE=my_test						      # 项目数据库名
+    ports:
+      - "3306:3306" # 指定端口号映射
+    volumes:
+      - ./root/mysql/conf:/etc/mysql/conf.d # 映射数据卷
+      - ./root/mysql/logs:/var/log/mysql 
+      - ./root/mysql/data:/var/lib/mysql  
+
+    networks:
+      data_security:
+        ipv4_address: 192.128.0.2
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql-mode='' --max-execution-time=1000
+  
+networks:
+  data_security:      # 自定义网络名字
+    driver: bridge 
+    ipam:
+      config:
+        - subnet: 192.128.0.0/16           #自定义固定容器ip 实现容器间通讯，增强docker-compose项目可移植性

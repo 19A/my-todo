@@ -292,9 +292,9 @@ docker run -d --restart=always --name my-node --restart='always' -p 3000:8888 my
 1.拉取镜像
 docker pull mysql
 2.创建挂载目录
-mkdir -p /root/mysql/data /root/mysql/logs /root/mysql/conf
+mkdir -p /data/mysql/data /data/mysql/logs /data/mysql/conf
 3.启动容器
-docker run --restart=always -p 3306:3306 --name mysql -v /root/mysql/conf:/etc/mysql/conf.d -v /root/mysql/logs:/var/log/mysql -v /root/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mysql -d mysql
+docker run --restart=always -p 3306:3306 --name mysql -v /data/mysql/conf:/etc/mysql/conf.d -v /data/mysql/logs:/var/log/mysql -v /data/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD=mysql -d mysql
 4.进入mysql容器
 docker exec -it mysql /bin/bash
 5.进入mysql
