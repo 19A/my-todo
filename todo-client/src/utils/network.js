@@ -113,7 +113,7 @@ service.interceptors.response.use(
       case 401:
         setTimeout(() => {
           window.location.pathname = "/login";
-        }, 10000);
+        }, 3000);
         break;
       case 403:
         clearUser();
@@ -129,7 +129,7 @@ service.interceptors.response.use(
           //     redirect: router.currentRoute.fullPath
           //   }
           // });
-        }, 100000);
+        }, 3000);
         break;
       // 404请求不存在
       case 404:
