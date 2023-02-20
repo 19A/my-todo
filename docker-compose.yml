@@ -16,7 +16,7 @@ services:
       - ./data/nginx/conf.d:/etc/nginx/conf.d  
       - ./data/nginx/logs:/var/log/nginx nginx            # nginx日志
   node:
-    build: '.'  # 表示以当前目录下的Dockerfile开始构建镜像
+    build: '.'  # 表示以当前目录下的Dockerfile开始构d建镜像
     image: todo/node-image #从当前目录下todo-client子目录内找Dockerfile生成image
     container_name: node-container
     ports:
