@@ -1,4 +1,8 @@
 ## todo-client
+### 简介
+```
+是一个学习的demo项目，用react, express实现登录注册和任务的增删改查，可以使用docker-compose部署
+```
 ### 结构
 
 ```
