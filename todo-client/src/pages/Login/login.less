@@ -1,0 +1,40 @@
+/* 新增移动端样式 */
+@media screen and (min-width: 400px) {
+  .login-wrapper {
+    width: 400px;
+    margin: 0 auto;
+    .tab-group {
+      margin: 10px auto 20px;
+      justify-content: center;
+    }
+    .submit-btn {
+      width: 70%;
+      margin-left: 34%;
+    }
+    .login-tab .login-tab-item {
+      cursor: pointer;
+    }
+    .tab-active {
+      color: #1677ff;
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .login-wrapper {
+    max-width: 80vw;
+    margin: 0 auto;
+    .tab-group {
+      justify-content: center;
+    }
+    .submit-btn {
+      width: 100%;
+    }
+    .login-tab .login-tab-item {
+      cursor: pointer;
+    }
+    .tab-active {
+      color: #1677ff;
+    }
+  }
+}

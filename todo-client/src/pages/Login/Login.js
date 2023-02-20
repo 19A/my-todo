@@ -1,11 +1,21 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
-import { Button, Checkbox, Form, Input, Row, Col, notification } from "antd";
+import {
+  Button,
+  Checkbox,
+  Form,
+  Input,
+  Row,
+  Col,
+  Space,
+  notification
+} from "antd";
 
 import { loginApi, registerApi } from "@/services/index.js";
 
-import "./login.css";
+import "./login.less";
+// import styles from "./login.less";
 const baseURL = "https://login";
 
 const defaultFormStyle = {
@@ -90,20 +100,20 @@ export default class Login extends Component {
     const { isLogin } = this.state;
     return (
       <div className='login-wrapper'>
-        <div className='login-tab'>
-          <div
-            className={"login-tab-item" + (isLogin ? " tab-active" : "")}
+        <Space.Compact block className='tab-group'>
+          <Button
             onClick={() => this.tabChange("login")}
+            className={isLogin ? " tab-active" : ""}
           >
             登录
-          </div>
-          <div
-            className={"login-tab-item" + (!isLogin ? " tab-active" : "")}
+          </Button>
+          <Button
             onClick={() => this.tabChange("register")}
+            className={!isLogin ? " tab-active" : ""}
           >
             注册
-          </div>
-        </div>
+          </Button>
+        </Space.Compact>
         {isLogin && (
           <div className='login'>
             <Form
@@ -139,21 +149,22 @@ export default class Login extends Component {
               >
                 <Input.Password />
               </Form.Item>
-              <Form.Item
-                wrapperCol={{
-                  offset: 8,
-                  span: 24
-                }}
-              >
-                <Button
-                  style={{ width: "100%" }}
-                  type='primary'
-                  htmlType='submit'
-                >
+              <Row>
+                <Button type='primary' htmlType='submit' className='submit-btn'>
                   登录
                 </Button>
-              </Form.Item>
-              <Row align='space-between'>
+                {/* <Col span={8}></Col>
+                <Col span={16}>
+                  <Button
+                    type='primary'
+                    htmlType='submit'
+                    className='submit-btn'
+                  >
+                    登录
+                  </Button>
+                </Col> */}
+              </Row>
+              {/* <Row align='space-between'>
                 <Col span={9}>
                   <Form.Item
                     name='remember'
@@ -167,7 +178,7 @@ export default class Login extends Component {
                   </Form.Item>
                 </Col>
                 <a onClick={this.forgetPassword}>忘记密码</a>
-              </Row>
+              </Row> */}
             </Form>
           </div>
         )}
@@ -175,12 +186,8 @@ export default class Login extends Component {
           <div className='register'>
             <Form
               name='register'
-              labelCol={{
-                span: 8
-              }}
-              wrapperCol={{
-                span: 16
-              }}
+              {...defaultFormStyle}
+              {...defaultFormConfig}
               initialValues={{
                 remember: true
               }}
@@ -224,20 +231,21 @@ export default class Login extends Component {
               >
                 <Input.Password />
               </Form.Item>
-              <Form.Item
-                wrapperCol={{
-                  offset: 8,
-                  span: 24
-                }}
-              >
-                <Button
-                  style={{ width: "100%" }}
-                  type='primary'
-                  htmlType='submit'
-                >
+              <Row>
+                <Button type='primary' htmlType='submit' className='submit-btn'>
                   立即注册
                 </Button>
-              </Form.Item>
+                {/* <Col span={8}></Col> */}
+                {/* <Col span={16}>
+                  <Button
+                    type='primary'
+                    htmlType='submit'
+                    className='submit-btn'
+                  >
+                    立即注册
+                  </Button>
+                </Col> */}
+              </Row>
             </Form>
           </div>
         )}
