@@ -30,13 +30,14 @@ const COLOR_PRIMARY_BLUE_1 = "#0840f8";
 const COLOR_PRIMARY_BLUE_2 = "#3f51b5";
 const COLOR_PRIMARY_BLUE_3 = "#7b8cff";
 const COLOR_PRIMARY_GREEN_1 = "#00b96b";
+const COLOR_PRIMARY_GREEN_2 = "#29BECE";
 
 // 全局配置
 const globalConfig = {
   locale: zhCN, // 本地化语言
   theme: {
     token: {
-      colorPrimary: COLOR_PRIMARY_BLUE_1
+      colorPrimary: COLOR_PRIMARY_GREEN_2
     }
   }
 };

@@ -181,7 +181,7 @@ const Home = (props) => {
     const { selectedKeys, field } = other;
     const fieldValue = selectedKeys && selectedKeys[0];
     // 查询条件、排序条件 变更后重置分页参数为默认
-    debugger;
+    // debugger;
     if (isClear) {
       setSortedInfo({});
       setFilteredInfo({});
@@ -370,18 +370,21 @@ const Home = (props) => {
       title: "标题",
       dataIndex: "title",
       key: "title",
+      width: 100,
       ...getColumnSearchProps("title")
     },
     {
       title: "任务内容",
       dataIndex: "content",
       key: "content",
-      width: 200
+      minWidth: 150
+      // ellipsis: true
     },
     {
       title: "任务截止日期",
       dataIndex: "gmt_expire",
       key: "gmt_expire",
+      // ellipsis: true,
       render: (val, record) => taskFailedRender(val, record)
     },
     {
@@ -404,6 +407,7 @@ const Home = (props) => {
       dataIndex: "gmt_update",
       key: "gmt_update",
       sorter: true,
+      // ellipsis: true,
       sortOrder: sortedInfo.columnKey === "gmt_update" ? sortedInfo.order : null
     },
     {
@@ -438,16 +442,19 @@ const Home = (props) => {
           <Button type='default' onClick={handleTaskCreate}>
             新建
           </Button>
-          <a href='http://1.117.165.71:8889' target='_blank' rel='noreferrer'>
-            外网
-          </a>
+          <Button
+            type='default'
+            onClick={() => (window.location.href = "http://1.117.165.71:8889")}
+          >
+            公网
+          </Button>
         </div>
-        <p>token: {props.store.token}</p>
         <Table
           columns={columns}
           dataSource={list}
           pagination={pagination}
           onChange={handleTableChange}
+          className='task-table'
           rowClassName='todo-table-row'
         />
       </Content>

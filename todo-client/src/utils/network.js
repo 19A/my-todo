@@ -85,6 +85,10 @@ service.interceptors.request.use(
   }
 );
 
+function back() {
+  window.location.hash = "#/login";
+}
+
 // 添加响应拦截器
 service.interceptors.response.use(
   function (response) {
@@ -112,7 +116,7 @@ service.interceptors.response.use(
       // 在登录成功后返回当前页面，这一步需要在登录页操作。
       case 401:
         setTimeout(() => {
-          window.location.pathname = "/login";
+          back();
         }, 3000);
         break;
       case 403:
@@ -122,7 +126,7 @@ service.interceptors.response.use(
         // 清除本地token和清空vuex中token对象
         // 跳转登录页面，并将要浏览的页面fullPath传过去，登录成功后跳转需要访问的页面
         setTimeout(() => {
-          window.location.pathname = "/login";
+          back();
           // router.replace({
           //   path: "/login",
           //   query: {

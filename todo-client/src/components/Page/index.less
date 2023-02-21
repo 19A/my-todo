@@ -4,7 +4,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 70px 20px 40px;
+  padding: 15px;
   box-sizing: border-box;
   color: #ccc;
   .left {
@@ -33,9 +33,10 @@
     }
   }
   .right {
-    img{
+    img {
       width: 50px;
       height: 50px;
+      border-radius: 50%;
     }
   }
 }
@@ -45,4 +46,23 @@
   height: calc(100vh - 80px);
   background-color: #ccc;
   padding: 20px 40px;
+}
+
+@media screen and (min-width: 400px) {
+  .mobile-menu,
+  .mobile-collapse {
+    display: none;
+  }
+}
+@media screen and (max-width: 400px) {
+  .pc-menu {
+    display: none;
+  }
+  .mobile-menu {
+    width: 156px;
+    position: absolute;
+    z-index: 1;
+    top: 40px;
+    left: 0;
+  }
 }

@@ -19,11 +19,16 @@ import "./login.less";
 const baseURL = "https://login";
 
 const defaultFormStyle = {
-  labelCol: { span: 8 },
-  wrapperCol: { span: 16 }
+  // labelCol: { span: 8 },
+  // wrapperCol: { span: 16 },
+  layout: "vertical"
 };
 const defaultFormConfig = {
   autoComplete: "off"
+};
+
+const ERROR_MSG = {
+  invalid: "无效的用户名或密码"
 };
 
 /*eslint-disable*/
@@ -75,16 +80,14 @@ export default class Login extends Component {
       notification.success({
         message: "注册成功，请登录账号"
       });
-      this.tabChange("login");
+      this.tabChange(true);
     } else {
       // 注册失败，若为用户已存在，则跳转登录界面
     }
   };
 
-  tabChange = (key) => {
-    this.setState({
-      isLogin: key === "login"
-    });
+  tabChange = (isLogin) => {
+    this.setState({ isLogin });
   };
 
   // onRegisterFailed = (errorInfo) => {
@@ -100,7 +103,7 @@ export default class Login extends Component {
     const { isLogin } = this.state;
     return (
       <div className='login-wrapper'>
-        <Space.Compact block className='tab-group'>
+        {/* <Space.Compact block className='tab-group'>
           <Button
             onClick={() => this.tabChange("login")}
             className={isLogin ? " tab-active" : ""}
@@ -113,7 +116,7 @@ export default class Login extends Component {
           >
             注册
           </Button>
-        </Space.Compact>
+        </Space.Compact> */}
         {isLogin && (
           <div className='login'>
             <Form
@@ -121,29 +124,30 @@ export default class Login extends Component {
               initialValues={{
                 remember: true
               }}
+              layout='horizontal'
               onFinish={this.onLogin}
               {...defaultFormStyle}
               {...defaultFormConfig}
             >
               <Form.Item
-                label='Username'
+                label='用户名'
                 name='username'
                 rules={[
                   {
                     required: true,
-                    message: "Please input your username!"
+                    message: ERROR_MSG.invalid
                   }
                 ]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
-                label='Password'
+                label='密码'
                 name='password'
                 rules={[
                   {
                     required: true,
-                    message: "Please input your password!"
+                    message: ERROR_MSG.invalid
                   }
                 ]}
               >
@@ -153,16 +157,6 @@ export default class Login extends Component {
                 <Button type='primary' htmlType='submit' className='submit-btn'>
                   登录
                 </Button>
-                {/* <Col span={8}></Col>
-                <Col span={16}>
-                  <Button
-                    type='primary'
-                    htmlType='submit'
-                    className='submit-btn'
-                  >
-                    登录
-                  </Button>
-                </Col> */}
               </Row>
               {/* <Row align='space-between'>
                 <Col span={9}>
@@ -196,36 +190,36 @@ export default class Login extends Component {
               autoComplete='off'
             >
               <Form.Item
-                label='Username'
+                label='用户名'
                 name='username'
                 rules={[
                   {
                     required: true,
-                    message: "Please input your username!"
+                    message: ERROR_MSG.invalid
                   }
                 ]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
-                label='Password'
+                label='密码'
                 name='password'
                 rules={[
                   {
                     required: true,
-                    message: "Please input your password!"
+                    message: ERROR_MSG.invalid
                   }
                 ]}
               >
                 <Input.Password />
               </Form.Item>
               <Form.Item
-                label='Comfirm'
+                label='密码确认'
                 name='confirmPwd'
                 rules={[
                   {
                     required: true,
-                    message: "Please confirm your password!"
+                    message: ERROR_MSG.invalid
                   }
                 ]}
               >
@@ -235,20 +229,19 @@ export default class Login extends Component {
                 <Button type='primary' htmlType='submit' className='submit-btn'>
                   立即注册
                 </Button>
-                {/* <Col span={8}></Col> */}
-                {/* <Col span={16}>
-                  <Button
-                    type='primary'
-                    htmlType='submit'
-                    className='submit-btn'
-                  >
-                    立即注册
-                  </Button>
-                </Col> */}
               </Row>
             </Form>
           </div>
         )}
+        <Button
+          type='primary'
+          htmlType='submit'
+          style={{ marginTop: 10 }}
+          className='submit-btn'
+          onClick={() => this.tabChange(!isLogin)}
+        >
+          {isLogin ? "无账号去注册" : "已有账号去登录"}
+        </Button>
       </div>
     );
   }
