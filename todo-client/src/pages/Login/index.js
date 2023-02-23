@@ -4,12 +4,12 @@ import Login from "./Login";
 const { Header, Footer, Content } = Layout;
 const Index = () => (
   <Layout>
-    <Header>Header</Header>
+    <Header></Header>
     <Layout>
-      <Content>Content</Content>
+      {/* <Content></Content> */}
       <Login />
     </Layout>
-    <Footer>Footer</Footer>
+    {/* <Footer>Footer</Footer> */}
   </Layout>
 );
 export default Index;

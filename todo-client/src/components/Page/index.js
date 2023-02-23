@@ -1,99 +1,54 @@
 import react, { Component, Fragment, createRef } from "react";
 import { withRouter } from "react-router-dom";
+import { Space } from "antd";
 import {
   AppstoreOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   MailOutlined,
+  MenuOutlined,
   SettingOutlined
 } from "@ant-design/icons";
-import { Dropdown, Modal, Form, Input, Menu, Button } from "antd";
+import { Dropdown, Modal, Form, Input, Menu, Button, Icon } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Space } from "antd";
+import { MenuTree } from "@/components/MenuTree";
+
 import defaultAvatar from "@/assets/avatar.jpg";
 import { pwdModifyApi } from "@/services";
-// const { Header as AntHeader, Content as AntHeader } = Layout;
 
 import "./index.less";
 import { inject, observer } from "mobx-react";
 
 const menuConfig = [
-  { title: "首页", path: "/" },
-  { title: "大数据平台", path: "/" },
-  { title: "掘金-博文", path: "/" },
-  { title: "CSDN-博文", path: "/" }
+  {
+    label: "LOGO",
+    key: "home"
+  }
+  // {
+  //   label: (
+  //     <a
+  //       href='http://1.117.165.71:8889'
+  //       target='_blank'
+  //       rel='noopener noreferrer'
+  //     >
+  //       公网
+  //     </a>
+  //   ),
+  //   key: "public"
+  // }
 ];
 const Item = Form.Item;
-
-const menuInfo = [
-  {
-    label: "目录1",
-    key: "mail"
-  },
-  {
-    label: "目录2",
-    key: "app",
-    disabled: true
-  },
-  // {
-  //   label: "Navigation Three - Submenu",
-  //   key: "SubMenu",
-  //   icon: <SettingOutlined />,
-  //   children: [
-  //     {
-  //       type: "group",
-  //       label: "Item 1",
-  //       children: [
-  //         {
-  //           label: "Option 1",
-  //           key: "setting:1"
-  //         },
-  //         {
-  //           label: "Option 2",
-  //           key: "setting:2"
-  //         }
-  //       ]
-  //     },
-  //     {
-  //       type: "group",
-  //       label: "Item 2",
-  //       children: [
-  //         {
-  //           label: "Option 3",
-  //           key: "setting:3"
-  //         },
-  //         {
-  //           label: "Option 4",
-  //           key: "setting:4"
-  //         }
-  //       ]
-  //     }
-  //   ]
-  // },
-  {
-    label: (
-      <a
-        href='http://1.117.165.71:8889'
-        target='_blank'
-        rel='noopener noreferrer'
-      >
-        公网
-      </a>
-    ),
-    disabled: true,
-    key: "public"
-  }
-];
 
 @inject("store")
 @observer
 @withRouter
-export class Header extends Component {
+export class Page extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuKey: "mail",
-      collapsed: true
+      menuKey: "home",
+      collapsed: true,
+      menuShow: true
     };
   }
 
@@ -107,14 +62,14 @@ export class Header extends Component {
   getMenu = () => {
     return (
       <ul className='menu-ul'>
-        {menuConfig.map(({ title, path }) => {
+        {menuConfig.map(({ label, path = "/" }) => {
           return (
             <li
               key='title'
               className='li'
               onClick={(path) => this.props.history.push(path)}
             >
-              {title}
+              {label}
             </li>
           );
         })}
@@ -174,87 +129,65 @@ export class Header extends Component {
   };
 
   getOverlay = () => {
-    const configList = [
+    const overlayConfig = [
+      { title: "个人中心", path: "/person" },
       { title: "修改密码", action: this.modify },
       { title: "退出系统", action: this.logout }
     ];
-    return configList.map(({ title, action }) => ({
-      key: title,
-      label: (
-        <span target='_blank' rel='noopener noreferrer' onClick={action}>
-          {title}
-        </span>
-      )
-    }));
+    return overlayConfig.map((i) => {
+      // console.log("action", action);
+      let { title, action, path } = i;
+      if (!action) {
+        action = () => this.props.history.push(path);
+      }
+      return {
+        key: title,
+        label: (
+          <span target='_blank' rel='noopener noreferrer' onClick={action}>
+            {title}
+          </span>
+        )
+      };
+    });
   };
 
-  toggleCollapsed = () => {
-    this.setState({ collapsed: !this.state.collapsed });
+  toggleMenu = () => {
+    this.setState({ menuShow: !this.state.menuShow });
   };
 
   render() {
-    const { userInfo } = this.props.store;
-    const { username, avator } = userInfo;
-    const { menuKey, collapsed } = this.state;
-
+    const { collapsed, menuShow } = this.state;
+    const { showHeader = true, children } = this.props;
     return (
-      <>
-        {/* <Menu
-          items={menuInfo}
-          mode='horizontal'
-          onClick={this.setMenuKey}
-          selectedKeys={[menuKey]}
-          className='menu-container pc-menu'
-        /> */}
-        <Button
-          type='primary'
-          className='mobile-collapse'
-          onClick={this.toggleCollapsed}
-          style={{
-            marginBottom: 16
-          }}
-        >
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button>
-        <Menu
-          mode='inline'
-          items={menuInfo}
-          selectedKeys={[menuKey]}
-          onClick={this.setMenuKey}
-          inlineCollapsed={collapsed}
-          className='menu-container mobile-menu'
-          style={collapsed ? { display: "none" } : {}}
-        />
-
-        <div className='header-container menu-container pc-menu'>
-          <div className='left'>
-            <section className='logo'>LOGO</section>
-            {this.getMenu()}
+      <div className='page-container'>
+        {showHeader && (
+          <div className='header-container pc-menu'>
+            <div className='left'>
+              {this.getMenu()}
+              <div className='mobile-collapse' onClick={this.toggleMenu}>
+                {menuShow ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
+              </div>
+              {/* <MenuOutlined /> */}
+            </div>
+            <div className='right'>
+              <Dropdown menu={{ items: this.getOverlay() }}>
+                <span>
+                  <Space>
+                    <img
+                      alt='用户头像'
+                      referrer='no-referrer'
+                      className='user-avatar'
+                      src={defaultAvatar}
+                    />
+                  </Space>
+                </span>
+              </Dropdown>
+            </div>
           </div>
-          <div className='right'>
-            <Dropdown menu={{ items: this.getOverlay() }}>
-              <span>
-                <Space>
-                  <img
-                    alt='用户头像'
-                    referrer='no-referrer'
-                    className='user-avatar'
-                    src={defaultAvatar}
-                  />
-                  <span className='user-name'>{username}</span>
-                  <DownOutlined />
-                </Space>
-              </span>
-            </Dropdown>
-          </div>
-        </div>
-      </>
+        )}
+        <MenuTree show={menuShow} />
+        <div className='content-container'>{children}</div>;
+      </div>
     );
-  }
-}
-
-export class Content extends Component {
-  render() {
-    return <div className='content-container' {...this.props}></div>;
   }
 }

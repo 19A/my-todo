@@ -63,7 +63,7 @@ const App = (app) => {
           ></Route>
         );
       })}
-      <Redirect from='/' to='/home' exact />
+      <Redirect from='/' to='/app' exact />
     </Switch>
   );
 };

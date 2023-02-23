@@ -26,7 +26,7 @@ import React, {
   useImperativeHandle
 } from "react";
 import dayjs from "dayjs";
-import { Header, Content } from "@/components/Page";
+import { Page } from "@/components/Page";
 import { DATETIME_MAX } from "@/utils/constants";
 import { nullValueFilter, createPagination } from "@/utils/index";
 import {
@@ -370,21 +370,19 @@ const Home = (props) => {
       title: "标题",
       dataIndex: "title",
       key: "title",
-      width: 100,
+      width: 400,
       ...getColumnSearchProps("title")
     },
     {
       title: "任务内容",
       dataIndex: "content",
       key: "content",
-      minWidth: 150
-      // ellipsis: true
+      width: 400
     },
     {
       title: "任务截止日期",
       dataIndex: "gmt_expire",
       key: "gmt_expire",
-      // ellipsis: true,
       render: (val, record) => taskFailedRender(val, record)
     },
     {
@@ -407,7 +405,6 @@ const Home = (props) => {
       dataIndex: "gmt_update",
       key: "gmt_update",
       sorter: true,
-      // ellipsis: true,
       sortOrder: sortedInfo.columnKey === "gmt_update" ? sortedInfo.order : null
     },
     {
@@ -415,12 +412,12 @@ const Home = (props) => {
       key: "action",
       render: (_, record) => tagsRender("action", record)
     }
-  ];
+  ].map((i) => ({ ...i, width: i.width || 400 }));
 
   return (
     <Fragment>
-      <Header />
-      <Content>
+      {/* <Header /> */}
+      <Page>
         <div style={{ marginBottom: 16 }}>
           <Button
             type='primary'
@@ -455,9 +452,9 @@ const Home = (props) => {
           pagination={pagination}
           onChange={handleTableChange}
           className='task-table'
-          rowClassName='todo-table-row'
+          rowClassName='task-table-row'
         />
-      </Content>
+      </Page>
     </Fragment>
   );
 };
