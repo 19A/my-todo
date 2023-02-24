@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 import {
   MailOutlined,
   SettingOutlined,
@@ -9,7 +10,8 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 
-export class MenuTree extends Component {
+@withRouter
+export class SideBar extends Component {
   getItem = (label, key, icon, children, type) => {
     return {
       key,
@@ -21,7 +23,7 @@ export class MenuTree extends Component {
   };
   getMenuItem = () => {
     return [
-      this.getItem("Option 1", "1", <PieChartOutlined />),
+      this.getItem("收支情况", "bill-chart", <PieChartOutlined />),
       this.getItem("Option 2", "2", <DesktopOutlined />),
       this.getItem("Option 3", "3", <ContainerOutlined />),
       this.getItem("Navigation One", "sub1", <MailOutlined />, [
@@ -42,15 +44,17 @@ export class MenuTree extends Component {
   };
 
   setMenuItem = (e) => {
-    console.log("e", e);
+    this.props.history.push(e.key);
   };
+
   render() {
     const items = this.getMenuItem();
     const { show } = this.props;
     return (
-      <div className='menu-tree-container'>
+      <div className='sidebar-container'>
         {show && (
           <Menu
+            onClick={this.setMenuItem}
             defaultSelectedKeys={["1"]}
             defaultOpenKeys={["sub1"]}
             mode='inline'

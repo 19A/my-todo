@@ -2,7 +2,10 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Category from "../pages/Category";
 import Products from "../pages/Products";
+import BillChart from "../pages/BillChart";
 // import Person from "../pages/Person";
+
+// unauthorized: 非系统内嵌套页面
 export const routers = [
   // {
   //   path: "/app",
@@ -17,12 +20,16 @@ export const routers = [
   // },
   {
     path: "/home",
-    // authorized: true,
     component: Home
   },
   {
     path: "/login",
-    component: Login
+    component: Login,
+    unauthorized: true
+  },
+  {
+    path: "/bill-chart",
+    component: BillChart
   },
   {
     path: "/category",

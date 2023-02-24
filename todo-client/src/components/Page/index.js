@@ -10,8 +10,8 @@ import {
   SettingOutlined
 } from "@ant-design/icons";
 import { Dropdown, Modal, Form, Input, Menu, Button, Icon } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { MenuTree } from "@/components/MenuTree";
+import { SideBar } from "@/components/SideBar";
+import { getUserToken, clearUser } from "@@/src/utils";
 
 import defaultAvatar from "@/assets/avatar.jpg";
 import { pwdModifyApi } from "@/services";
@@ -24,18 +24,6 @@ const menuConfig = [
     label: "LOGO",
     key: "home"
   }
-  // {
-  //   label: (
-  //     <a
-  //       href='http://1.117.165.71:8889'
-  //       target='_blank'
-  //       rel='noopener noreferrer'
-  //     >
-  //       公网
-  //     </a>
-  //   ),
-  //   key: "public"
-  // }
 ];
 const Item = Form.Item;
 
@@ -48,17 +36,26 @@ export class Page extends Component {
     this.state = {
       menuKey: "home",
       collapsed: true,
-      menuShow: true
+      menuShow: false
     };
+  }
+
+  componentDidMount() {
+    const token = getUserToken();
+    if (!token) {
+      this.props.history.push("/login");
+    }
   }
 
   formRef = createRef();
 
+  // 设置当前菜单
   setMenuKey(e) {
     console.log("e", e);
     this.setState({ menuKey: e.key });
   }
 
+  // 获取菜单
   getMenu = () => {
     return (
       <ul className='menu-ul'>
@@ -77,6 +74,12 @@ export class Page extends Component {
     );
   };
 
+  // 显示菜单
+  toggleMenu = () => {
+    this.setState({ menuShow: !this.state.menuShow });
+  };
+
+  // 打开修改密码弹框
   modify = () => {
     Modal.confirm({
       title: "修改密码",
@@ -123,11 +126,14 @@ export class Page extends Component {
     });
   };
 
+  // 退出
   logout = () => {
     window.alert("退出系统");
+    clearUser();
     this.props.history.push("/login");
   };
 
+  // 获取下拉菜单
   getOverlay = () => {
     const overlayConfig = [
       { title: "个人中心", path: "/person" },
@@ -149,10 +155,6 @@ export class Page extends Component {
         )
       };
     });
-  };
-
-  toggleMenu = () => {
-    this.setState({ menuShow: !this.state.menuShow });
   };
 
   render() {
@@ -185,7 +187,7 @@ export class Page extends Component {
             </div>
           </div>
         )}
-        <MenuTree show={menuShow} />
+        <SideBar show={menuShow} />
         <div className='content-container'>{children}</div>;
       </div>
     );

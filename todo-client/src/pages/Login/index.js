@@ -2,14 +2,12 @@ import React from "react";
 import { Layout } from "antd";
 import Login from "./Login";
 const { Header, Footer, Content } = Layout;
-const Index = () => (
-  <Layout>
-    <Header></Header>
-    <Layout>
-      {/* <Content></Content> */}
+const Index = () => {
+  return (
+    <div className='root-container'>
+      <div className='lg-header'>MY-TODO</div>
       <Login />
-    </Layout>
-    {/* <Footer>Footer</Footer> */}
-  </Layout>
-);
+    </div>
+  );
+};
 export default Index;

@@ -57,7 +57,7 @@ export default class Login extends Component {
       notification.success({
         message: "登录成功！"
       });
-      this.props.history.push("/app");
+      this.props.history.push("/home");
     }
   };
 
@@ -236,7 +236,7 @@ export default class Login extends Component {
         <Button
           type='primary'
           htmlType='submit'
-          style={{ marginTop: 10 }}
+          style={{ marginTop: 20 }}
           className='submit-btn'
           onClick={() => this.tabChange(!isLogin)}
         >

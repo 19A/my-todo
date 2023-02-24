@@ -4,19 +4,16 @@ import ReactDOM from "react-dom/client";
 import { ConfigProvider, notification } from "antd";
 // import locale from "antd/es/date-picker/locale/zh_CN";
 import zhCN from "antd/locale/zh_CN";
-import {
-  Route,
-  Switch,
-  BrowserRouter,
-  Redirect,
-  HashRouter
-} from "react-router-dom";
+import { Route, Switch, Redirect, HashRouter } from "react-router-dom";
+
+import { Page } from "@/components/Page";
 
 import globalStore from "./store/index";
 import { routers } from "./routers/index";
 import reportWebVitals from "./reportWebVitals";
 
 import "./index.css";
+
 // // 根据路由配置生成路由
 // const routerGenerator = () =>
 //   routers.map(({ component, path, ...other }) => {
@@ -53,17 +50,21 @@ notification.config({
 const App = (app) => {
   return (
     <Switch>
-      {routers.map(({ component, path, ...other }) => {
-        return (
-          <Route
-            {...other}
-            key={path}
-            path={path}
-            component={component}
-          ></Route>
-        );
-      })}
-      <Redirect from='/' to='/app' exact />
+      {routers.map(
+        ({ component: Comp, unauthorized, children, path, ...other }) => {
+          return (
+            <Route {...other} key={path} path={path}>
+              {unauthorized && <Comp />}
+              {!unauthorized && (
+                <Page>
+                  <Comp />
+                </Page>
+              )}
+            </Route>
+          );
+        }
+      )}
+      <Redirect from='/' to='/home' exact />
     </Switch>
   );
 };

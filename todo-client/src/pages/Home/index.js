@@ -415,18 +415,16 @@ const Home = (props) => {
   ].map((i) => ({ ...i, width: i.width || 400 }));
 
   return (
-    <Fragment>
-      {/* <Header /> */}
-      <Page>
-        <div style={{ marginBottom: 16 }}>
-          <Button
-            type='primary'
-            onClick={() => handleQuery()}
-            style={{ marginRight: 16 }}
-          >
-            查询
-          </Button>
-          {/* <Button
+    <>
+      <div style={{ marginBottom: 16 }}>
+        <Button
+          type='primary'
+          onClick={() => handleQuery()}
+          style={{ marginRight: 16 }}
+        >
+          查询
+        </Button>
+        {/* <Button
             type='primary'
             onClick={() => {
               setSearchAll(true);
@@ -436,26 +434,25 @@ const Home = (props) => {
           >
             查询所有
           </Button> */}
-          <Button type='default' onClick={handleTaskCreate}>
-            新建
-          </Button>
-          <Button
-            type='default'
-            onClick={() => (window.location.href = "http://1.117.165.71:8889")}
-          >
-            公网
-          </Button>
-        </div>
-        <Table
-          columns={columns}
-          dataSource={list}
-          pagination={pagination}
-          onChange={handleTableChange}
-          className='task-table'
-          rowClassName='task-table-row'
-        />
-      </Page>
-    </Fragment>
+        <Button type='default' onClick={handleTaskCreate}>
+          新建
+        </Button>
+        <Button
+          type='default'
+          onClick={() => (window.location.href = "http://1.117.165.71:8889")}
+        >
+          公网
+        </Button>
+      </div>
+      <Table
+        columns={columns}
+        dataSource={list}
+        pagination={pagination}
+        onChange={handleTableChange}
+        className='task-table'
+        rowClassName='task-table-row'
+      />
+    </>
   );
 };
 export default inject("store")(observer(Home));
