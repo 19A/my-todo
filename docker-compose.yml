@@ -33,10 +33,10 @@ services:
     container_name: mysql-container # 容器名称
     environment:
       - TZ=Asia/Shanghai # 指定时区
-      - MYSQL_ROOT_PASSWORD=mysql #数据库初始话为root用户设置的默认密码
+      - MYSQL_ROOT_PASSWORD=ZhubiaodeMysql #数据库初始话为root用户设置的默认密码
       - MYSQL_DATABASE=my_test # 项目数据库名
     ports:
-      - "3306:3306" # 指定端口号映射
+      - "3308:3306" # 指定端口号映射
     volumes:
       - ./root/mysql/conf:/etc/mysql/conf.d # 映射数据卷
       - ./root/mysql/logs:/var/log/mysql

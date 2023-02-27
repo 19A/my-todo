@@ -57,7 +57,7 @@ export default class Login extends Component {
       notification.success({
         message: "登录成功！"
       });
-      this.props.history.push("/home");
+      this.props.history.push("/bill-chart");
     }
   };
 

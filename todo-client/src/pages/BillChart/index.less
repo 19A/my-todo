@@ -1,0 +1,25 @@
+@import "../../assets/style/variable.less";
+
+.bill-chart-container {
+  .bill-table {
+    .bill-item {
+      .desc {
+        display: flex;
+        justify-content: space-between;
+        &-product {
+          //   @ellipsis();
+          @multiple-ellipsis();
+          width: 240px;
+        }
+        &-amount {
+          font: 20px weight;
+        }
+      }
+      .tag,
+      .time {
+        font: 12px weight;
+        color: #ccc;
+      }
+    }
+  }
+}

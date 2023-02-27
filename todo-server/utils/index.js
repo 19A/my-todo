@@ -3,8 +3,8 @@ const config = require("../db/dbConfig");
 const { CODE_ERROR, CODE_SUCCESS } = require("../utils/constant");
 // 用于保存数据连接实例
 // var db = null;
-function connect() {
-  return mysql.createConnection(config);
+function connect(props) {
+  return mysql.createConnection(config(props));
 }
 
 var pingInterval;
@@ -46,10 +46,10 @@ var pingInterval;
 
 // connect();
 
-//新建查询连接
-function querySql(sql) {
-  var db = connect();
-  console.log("db", db);
+// 查询默认dbConfig的数据
+function querySql(sql, dbConfig) {
+  var db = connect(dbConfig);
+  console.log("--------------------------db------------------------------", db);
   return new Promise((resolve, reject) => {
     // 此处sql可为 query 【查询数据】update【执行结果】delete【执行结果】
     try {
@@ -67,13 +67,37 @@ function querySql(sql) {
     }
   });
 }
-
 // 查询一条语句
 function queryOne(sql) {
   return new Promise((resolve, reject) => {
     querySql(sql)
       .then((res) => {
-        console.log("res=====", res);
+        console.log(
+          "===================querySql=================================",
+          res
+        );
+        // resolve(res);
+        if (res && res.length > 0) {
+          resolve(res[0]);
+        } else {
+          resolve(null);
+        }
+      })
+      .catch((err) => reject(err));
+  });
+}
+
+//bill库查询
+function queryBillSql(sql) {
+  return querySql(sql, {
+    database: "xqq-bill"
+  });
+}
+function queryBillOne(sql) {
+  return new Promise((resolve, reject) => {
+    queryBillSql(sql)
+      .then((res) => {
+        console.log("====================queryBillOne==========", res);
         // resolve(res);
         if (res && res.length > 0) {
           resolve(res[0]);
@@ -132,5 +156,7 @@ module.exports = {
   queryOne,
   dateFormat,
   resolveData,
-  rejectError
+  rejectError,
+  queryBillSql,
+  queryBillOne
 };

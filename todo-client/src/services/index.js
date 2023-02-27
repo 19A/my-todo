@@ -32,7 +32,7 @@ export function pwdModifyApi(data) {
 }
 
 /**
- * @description list
+ * @description todo-list
  * @param {*} 列表查询
  */
 export function queryListApi(data) {
@@ -40,25 +40,33 @@ export function queryListApi(data) {
 }
 
 /**
- * @description list
- * @param {*} 新增子项
+ * @description 新增子项
+ * @param {*}
  */
 export function createItemApi(data) {
   return post(`/task/create`, data);
 }
 
 /**
- * @description list
- * @param {*} 删除子项
+ * @description 删除子项
+ * @param {*}
  */
 export function deleteItemApi(data) {
   return post(`/task/delete`, data);
 }
 
 /**
- * @description list
- * @param {*} 修改子项
+ * @description 修改子项
+ * @param {*}
  */
 export function modifyItemApi(data) {
   return post(`/task/update`, data);
+}
+
+/**
+ * @description 查询账单详情
+ * @param {*}
+ */
+export function queryBillListApi(data) {
+  return get(`/bill/query`, data);
 }

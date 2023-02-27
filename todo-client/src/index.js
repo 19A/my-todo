@@ -13,7 +13,7 @@ import { routers } from "./routers/index";
 import reportWebVitals from "./reportWebVitals";
 
 import "./index.css";
-
+import variables from "@/assets/style/variable.less";
 // // 根据路由配置生成路由
 // const routerGenerator = () =>
 //   routers.map(({ component, path, ...other }) => {
@@ -23,19 +23,16 @@ import "./index.css";
 //     });
 //     return <Routes />;
 //   });
-const COLOR_PRIMARY_BLUE_1 = "#0840f8";
-const COLOR_PRIMARY_BLUE_2 = "#3f51b5";
-const COLOR_PRIMARY_BLUE_3 = "#7b8cff";
-const COLOR_PRIMARY_GREEN_1 = "#00b96b";
-const COLOR_PRIMARY_GREEN_2 = "#29BECE";
 
 // 全局配置
+console.log("var", variables);
 const globalConfig = {
   locale: zhCN, // 本地化语言
   theme: {
     token: {
-      colorPrimary: COLOR_PRIMARY_GREEN_2
-    }
+      colorPrimary: variables["theme-color"]
+    },
+    Menu: variables["theme-color"]
   }
 };
 
@@ -64,7 +61,7 @@ const App = (app) => {
           );
         }
       )}
-      <Redirect from='/' to='/home' exact />
+      <Redirect from='/' to='/bill-chart' exact />
     </Switch>
   );
 };

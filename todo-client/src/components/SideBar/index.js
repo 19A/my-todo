@@ -12,6 +12,13 @@ import { Menu } from "antd";
 
 @withRouter
 export class SideBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      menuKey: "bill-chart"
+    };
+  }
+
   getItem = (label, key, icon, children, type) => {
     return {
       key,
@@ -21,10 +28,11 @@ export class SideBar extends Component {
       type
     };
   };
+
   getMenuItem = () => {
     return [
       this.getItem("收支情况", "bill-chart", <PieChartOutlined />),
-      this.getItem("Option 2", "2", <DesktopOutlined />),
+      this.getItem("当前TODO", "home", <DesktopOutlined />),
       this.getItem("Option 3", "3", <ContainerOutlined />),
       this.getItem("Navigation One", "sub1", <MailOutlined />, [
         this.getItem("Option 5", "5"),
@@ -43,22 +51,28 @@ export class SideBar extends Component {
     ];
   };
 
-  setMenuItem = (e) => {
-    this.props.history.push(e.key);
+  setMenuItem = ({ item, key, keyPath, domEvent }) => {
+    debugger;
+    this.setState({ menuKey: key });
+    this.props.history.push(`/${key}`);
   };
 
   render() {
     const items = this.getMenuItem();
     const { show } = this.props;
+    const { menuKey } = this.state;
+    console.log("key", menuKey);
     return (
       <div className='sidebar-container'>
         {show && (
           <Menu
             onClick={this.setMenuItem}
-            defaultSelectedKeys={["1"]}
+            // defaultSelectedKeys={}
             defaultOpenKeys={["sub1"]}
+            selectedKeys={[menuKey]}
             mode='inline'
-            theme='dark'
+            // theme='dark'
+            theme='light'
             //  inlineCollapsed={collapsed}
             items={items}
           />

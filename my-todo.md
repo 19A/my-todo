@@ -1,8 +1,11 @@
 ## todo-client
+
 ### 简介
+
 ```
 是一个学习的demo项目，用react, express实现登录注册和任务的增删改查，可以使用docker-compose部署
 ```
+
 ### 结构
 
 ```
@@ -286,8 +289,7 @@ CMD yarn start
 
 2.构建本地镜像
 docker build -t node .
-docker images 
-3.启动容器
+docker images 3.启动容器
 docker run -d --restart=always --name my-node --restart='always' -p 3000:8888 my-node
 
 #### 部署 mysql
@@ -376,17 +378,25 @@ unable to prepare context: unable to evaluate symlinks in Dockerfile path: lstat
 原因：DockerFile应该拼写为Dockerfile
 
 9.node一直连接不上mysql
-报错：Client does not support authentication protocol requested by server; 
+报错：Client does not support authentication protocol requested by server;
 原因：docker使用的最新的mysql，不支持旧的密码认证模式
 解决：降为和本地一致 5.7 版本的就行了。
 ```
 
-### docker-compose部署
-准备：下载docker 和 docker-compose;
+10.2023/02/24
+tmd 的服务器数据库被网络黑子删了。。。
+只能重新导入本地 sql 文件，发现 node 数据库连接不上 mysql：发现有报错
+Access denied for user 'root'@'node-container.data_data_security' (using password: YES)
+解决：node 更改文件后，未重新构建镜像！
 
-1.前端使用nginx
+### docker-compose 部署
 
-2.后端代码docker打包成镜像
+准备：下载 docker 和 docker-compose;
+
+1.前端使用 nginx
+
+2.后端代码 docker 打包成镜像
+
 ```
 # 镜像版本
 FROM node:14.17
@@ -414,10 +424,12 @@ EXPOSE 3000 8888
 
 # 启动
 CMD yarn start
-# 注：RUN 是在 docker build , CMD 在docker run 时运行。 
+# 注：RUN 是在 docker build , CMD 在docker run 时运行。
 
 ```
-3.配置docker-compose.yml
+
+3.配置 docker-compose.yml
+
 ```
 version: '3.1'
 services:
@@ -431,10 +443,10 @@ services:
       data_security:
         ipv4_address: 192.128.0.8
     privileged: true      # 这个必须要，解决nginx的文件调用的权限问题
-    volumes:   
+    volumes:
       - ./data/nginx/html:/usr/share/nginx/html           # 前端打包文件
-      - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf     # nginx配置文件 
-      - ./data/nginx/conf.d:/etc/nginx/conf.d  
+      - ./data/nginx/nginx.conf:/etc/nginx/nginx.conf     # nginx配置文件
+      - ./data/nginx/conf.d:/etc/nginx/conf.d
       - ./data/nginx/logs:/var/log/nginx nginx            # nginx日志
   node:
     build: '.'  # 表示以当前目录下的Dockerfile开始构d建镜像
@@ -443,7 +455,7 @@ services:
     ports:
       - "3000:8888"
     restart: always
-    environment: 
+    environment:
       TZ: Asia/Shanghai # 指定时区
     networks:
       data_security:
@@ -460,22 +472,23 @@ services:
       - "3306:3306" # 指定端口号映射
     volumes:
       - ./root/mysql/conf:/etc/mysql/conf.d # 映射数据卷
-      - ./root/mysql/logs:/var/log/mysql 
-      - ./root/mysql/data:/var/lib/mysql  
+      - ./root/mysql/logs:/var/log/mysql
+      - ./root/mysql/data:/var/lib/mysql
 
     networks:
       data_security:
         ipv4_address: 192.128.0.2
     command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --sql-mode='' --max-execution-time=1000
-  
+
 networks:
   data_security:      # 自定义网络名字
-    driver: bridge 
+    driver: bridge
     ipam:
       config:
         - subnet: 192.128.0.0/16           #自定义固定容器ip 实现容器间通讯，增强docker-compose项目可移植性
 
 ```
+
 4.相关命令
 docker-compose up
 docker-compose down

@@ -1,3 +1,5 @@
+@import "../../assets/style/variable.less";
+
 // 变量
 @head-height: 80px;
 @page-height: calc(100vh - @head-height);
@@ -11,7 +13,7 @@
   // 头
   .header-container {
     width: 100%;
-    background: #17174c;
+    background: @theme-color;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -68,6 +70,7 @@
   .content-container {
     height: @page-height;
     padding: 10px;
+    overflow: auto;
   }
 }
 

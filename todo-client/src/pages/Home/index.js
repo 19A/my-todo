@@ -370,14 +370,14 @@ const Home = (props) => {
       title: "标题",
       dataIndex: "title",
       key: "title",
-      width: 400,
+      width: 200,
       ...getColumnSearchProps("title")
     },
     {
       title: "任务内容",
       dataIndex: "content",
       key: "content",
-      width: 400
+      width: 200
     },
     {
       title: "任务截止日期",
@@ -405,6 +405,7 @@ const Home = (props) => {
       dataIndex: "gmt_update",
       key: "gmt_update",
       sorter: true,
+      width: 100,
       sortOrder: sortedInfo.columnKey === "gmt_update" ? sortedInfo.order : null
     },
     {
