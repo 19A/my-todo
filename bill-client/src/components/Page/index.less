@@ -1,0 +1,109 @@
+@import "../../assets/style/variable.less";
+
+// 变量
+@head-height: 80px;
+@page-height: calc(100vh - @head-height);
+
+// 根页面
+.page-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #ccc;
+  // 头
+  .header-container {
+    width: 100%;
+    background: @theme-color;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    height: @head-height;
+    box-sizing: border-box;
+    color: #ccc;
+    .left {
+      display: flex;
+      align-items: center;
+      .logo {
+        color: #ffffff;
+        font-size: 18px;
+        width: 160px;
+        height: 40px;
+        display: inline-block;
+        text-align: center;
+        line-height: 40px;
+      }
+      .menu-ul {
+        list-style: none;
+        margin-bottom: 0;
+        display: inline-flex;
+
+        li {
+          margin-right: 40px;
+        }
+        li:hover {
+          color: #fff;
+        }
+      }
+    }
+    .right {
+      img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+      }
+    }
+  }
+  // 侧边栏
+  .sidebar-container {
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    top: @head-height;
+    height: @page-height;
+    .ant-menu,
+    .ant-menu-root {
+      height: 100%;
+    }
+  }
+  // 主体内容
+  .content-container {
+    height: @page-height;
+    padding: 10px;
+    overflow: auto;
+  }
+}
+
+@media screen and (min-width: 700px) {
+  .mobile-menu,
+  .mobile-collapse {
+    // display: none;
+  }
+}
+@media screen and (max-width: 700px) {
+  .pc-menu {
+    // .left {
+    //   display: none;
+    // }
+  }
+  .mobile-collapse {
+    // position: absolute;
+    // top: 72px;
+    // width: 41px;
+    // height: 40px;
+    // cursor: pointer;
+    // z-index: 1;
+    // text-align: center;
+    // line-height: 40px;
+    // font-size: 16px;
+    // display: flex;
+    // align-items: center;
+  }
+  .mobile-menu {
+    width: 156px;
+    position: absolute;
+    z-index: 1;
+    top: 40px;
+    left: 0;
+  }
+}

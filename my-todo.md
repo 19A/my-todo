@@ -389,6 +389,20 @@ tmd 的服务器数据库被网络黑子删了。。。
 Access denied for user 'root'@'node-container.data_data_security' (using password: YES)
 解决：node 更改文件后，未重新构建镜像！
 
+11.node 镜像启动成功, 连接数据库报错:
+UnhandledPromiseRejectionWarning: Error: getaddrinfo ENOTFOUND mysql
+at GetAddrInfoReqWrap.onlookup [as oncomplete] (dns.js:69:26)
+原因：不明 ！
+临时解决：将 dbConfig 的 host 由 mysql 变更为 固定 ip 重启后解决。推测为 docker 的容器内 host 映射失败
+
+#### 其他问题
+
+```
+如何用谷歌浏览器的开发者工具模拟低版本浏览器?
+无法解决！
+
+```
+
 ### docker-compose 部署
 
 准备：下载 docker 和 docker-compose;

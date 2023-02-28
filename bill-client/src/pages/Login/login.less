@@ -1,0 +1,68 @@
+/* 新增移动端样式 */
+.ant-btn,
+.ant-input,
+.ant-input-password {
+  border-radius: 2px;
+}
+
+.root-container {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: lightcyan;
+}
+.lg-header {
+  width: 100%;
+  height: 80px;
+  margin: 60px 0 10px;
+  line-height: 80px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #29bece;
+  background: url("../../assets/logo.png") 10%/10% no-repeat;
+}
+@media screen and (min-width: 400px) {
+  .lg-header {
+    text-align: center;
+  }
+  .login-wrapper {
+    width: 300px;
+    margin: 15vh auto 0;
+    // background: #fff;
+    .tab-group {
+      // margin: 10px auto 20px;
+      // justify-content: center;
+    }
+    .submit-btn {
+      width: 100%;
+    }
+    .login-tab .login-tab-item {
+      cursor: pointer;
+    }
+    .tab-active {
+      color: #1677ff;
+    }
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .lg-header {
+    text-indent: 100px;
+  }
+  .login-wrapper {
+    padding: 0 30px;
+    margin: 0 auto;
+    .tab-group {
+      justify-content: center;
+    }
+    .submit-btn {
+      width: 100%;
+    }
+    .login-tab .login-tab-item {
+      cursor: pointer;
+    }
+    .tab-active {
+      color: #1677ff;
+    }
+  }
+}
