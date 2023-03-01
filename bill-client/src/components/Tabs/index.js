@@ -12,7 +12,6 @@ export default class Tabs extends Component {
             <Tag
               className={i.activeKey === i.key ? "active tag-tab" : "tab-tag"}
               onClick={() => {
-                debugger;
                 this.props.onChange(i.key);
               }}
             >

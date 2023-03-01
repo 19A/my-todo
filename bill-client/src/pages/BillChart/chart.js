@@ -6,7 +6,7 @@ import { Line } from "@ant-design/plots";
 import Tabs from "@/components/Tabs";
 import { queryTotalApi } from '@/services'
 
-import './less';
+import './index.less';
 
 const dateFormat = 'YYYY/MM/DD';
 const weekFormat = 'MM/DD';
@@ -15,8 +15,8 @@ const monthFormat = 'yyyy-MM';
 const Analysis = () => {
   const [stage, setStage] = useState('month');
   const [analysis, setAnalysis]  = useState('expense') // Income
-  const [month,setMonth] = useState();
-  const [year,setYear] = useState();
+  const [month,setMonth] = useState(new Date());
+  const [year,setYear] = useState(new Date());
   const [total, setTotal] = useState({
     children: [],
     regardlessIncomeExpenditure: 0,
@@ -109,8 +109,13 @@ const Analysis = () => {
       }
     ]
   };
-  const switchDate = (time) => {
-    console.log('time',time,'stage',stage);
+  const switchDate = (time,str) => {
+    console.log('time',time,'str',str,'stage',stage);
+    if(stage === 'month'){
+      setMonth(str)
+    }else{
+      setYear(str)
+    }
   }
   // console.log('stage',stage);
   // console.log('analysis',analysis);
@@ -131,8 +136,10 @@ const Analysis = () => {
             </div>
           </div>
           <div className='date'>
-            {/* {<DatePicker picker={type==='month'?'month':'year'} />} */}
-            {<DatePicker value={dayjs(dayjs(), monthFormat)} picker={'month'} onChange={this.switchDate}/>}
+            {<DatePicker 
+                value={type==='month'? month:year} 
+                picker={type==='month'?'month':'year'} 
+                onChange={switchDate}/>}
           </div>
           <div>
         <Tabs   
