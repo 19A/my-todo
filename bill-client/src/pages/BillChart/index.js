@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Space, Card, Table, Modal } from "antd";
+import Tabs from "@/components/Tabs";
 // import { data } from "@/mock/chart.js";
 import { queryBillListApi } from "@/services";
 import DemoLine from "./chart";
@@ -9,7 +10,8 @@ export default class BillChart extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      billData: []
+      billData: [],
+      tabKey: "bill"
     };
   }
   componentDidMount() {
@@ -73,25 +75,6 @@ export default class BillChart extends Component {
   );
 
   getCardItem = (record) => {
-    const {
-      bill_id,
-      trade_time,
-      trade_classify,
-      trader,
-      trader_account,
-      product_description,
-      trade_type,
-      money,
-      payment_method,
-      trade_state,
-      merchant_order_number,
-      remark,
-      sys_user_id,
-      del_flag,
-      create_time,
-      update_time,
-      bill_type
-    } = record;
     return (
       <Card size='small' bordered={false}>
         <div className='ul'>
@@ -101,30 +84,7 @@ export default class BillChart extends Component {
               text: record[i]
             })
           )}
-          {/* <div className='li'>
-            <div className='label'></div>
-            <div className='text'>
-              <p>{bill_id}</p>
-            </div>
-          </div> */}
         </div>
-        {/* <p>{bill_id}</p>
-        <p>{trade_time}</p>
-        <p>{trade_classify}</p>
-        <p>{trader}</p>
-        <p>{trader_account}</p>
-        <p>{product_description}</p>
-        <p>{trade_type}</p>
-        <p>{money}</p>
-        <p>{trade_state}</p>
-        <p>{payment_method}</p>
-        <p>{merchant_order_number}</p>
-        <p>{remark}</p>
-        <p>{sys_user_id}</p>
-        <p>{del_flag}</p>
-        <p>{create_time}</p>
-        <p>{update_time}</p>
-        <p>{bill_type}</p> */}
       </Card>
     );
   };
@@ -138,14 +98,12 @@ export default class BillChart extends Component {
   };
 
   render() {
-    const { billData } = this.state;
+    const { billData, tabKey } = this.state;
     const columns = [
       {
         title: "Action",
         key: "action",
         render: (_, record) => {
-          // console.log("recordProps", a, b, c);
-          // const { record } = recordProps;
           return this.getTableItem(record);
         }
       }
@@ -186,18 +144,41 @@ export default class BillChart extends Component {
     //     remark: "备注1"
     //   }
     // ];
+    const tabs = [
+      {
+        key: "bill",
+        label: `账单`,
+        children: (
+          <Table
+            className='bill-table'
+            showHeader={false}
+            columns={columns}
+            dataSource={billData}
+            pagination={true}
+          />
+        )
+      },
+      {
+        key: "chart",
+        label: `收支分析`,
+        children: (
+          <Card>
+            <DemoLine />
+          </Card>
+        )
+      }
+    ];
+
     return (
       <div className='bill-chart-container'>
-        <Table
-          className='bill-table'
-          showHeader={false}
-          columns={columns}
-          dataSource={billData}
-          pagination={true}
+        <Tabs
+          activeKey={tabKey}
+          tabs={tabs}
+          className='tabs'
+          onChange={(e) => {
+            this.setState({ tabKey: e });
+          }}
         />
-        <Card>
-          <DemoLine />
-        </Card>
       </div>
     );
   }

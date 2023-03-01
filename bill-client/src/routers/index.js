@@ -5,6 +5,10 @@ import BillChart from "../pages/BillChart";
 
 // unauthorized: 非系统内嵌套页面
 export const routers = [
+  // {
+  //   path: "/moblie",
+  //   component: Mobile
+  // },
   {
     path: "/home",
     component: Home
