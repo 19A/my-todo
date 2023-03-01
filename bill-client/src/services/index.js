@@ -73,6 +73,16 @@ export function queryBillListApi(data) {
 }
 
 /**
+ * @description 查询账单详情
+ * @param {} data.statisticType 统计类型 1按月 2按年
+ * @param {} data.statisticDate类型为1时传：yyyy-MM;为2时传yyyy
+ * 
+ */
+export function queryTotalApi(data) {
+  return get(`/bill/statistics/total`, data);
+}
+
+/**
  * @description 用户详情
  * @param {*}
  */

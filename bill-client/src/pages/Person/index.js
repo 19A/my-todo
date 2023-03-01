@@ -221,7 +221,7 @@ const Person = () => {
               listType='picture-card'
               className='avatar-uploader'
               showUploadList={false}
-              action='http://1.117.165.71/file/uploadFile'
+              action='http://1.117.165.71/x-api/file/uploadFile'
               beforeUpload={beforeUpload}
               onChange={handleChange}
             >

@@ -20,12 +20,12 @@ export default class BillChart extends Component {
 
   async queryBillList() {
     const res = await queryBillListApi({
-      pageNum: 0,
+      pageNum: 1,
       pageSize: 10
     });
     console.log("res", res);
     if (res) {
-      this.setState({ billData: res.data.content });
+      this.setState({ billData: res.data.rows });
     }
   }
 
@@ -33,10 +33,10 @@ export default class BillChart extends Component {
     const {
       bill_id,
       trade_time,
-      trade_classify,
+      tradeClassify,
       trader,
       trader_account,
-      product_description,
+      productDescription,
       trade_type,
       money,
       payment_method,
@@ -45,22 +45,23 @@ export default class BillChart extends Component {
       remark,
       sys_user_id,
       del_flag,
-      create_time,
+      createTime,
       update_time,
       bill_type
     } = record;
     return (
       <div onClick={() => this.goDetail(record)} className='bill-item'>
         <div className='desc'>
-          <div className='desc-product'>{product_description}</div>
+          <div className='desc-product'>{productDescription}</div>
           <div className='desc-amount'> {money}</div>
         </div>
         <div className='tag'>
-          {trade_classify}
+          {tradeClassify}
           {remark}
         </div>
         {/* <p>{trade_state}</p> */}
-        <p className='time'>{create_time}</p>
+        <p className='time'>{createTime}</p>
+        
       </div>
     );
   };
@@ -108,42 +109,6 @@ export default class BillChart extends Component {
         }
       }
     ];
-    // const data = [
-    //   {
-    //     tradeTime: "2023-02-23 21:23:33",
-    //     tradeCategoryName: "餐饮",
-    //     tradeCategoryCode: "eating",
-    //     tradeParter: "2023-02-23 21:23:33",
-    //     tradeAccount: "132423421xxxxx1234134",
-    //     tradeFood: "合肥黄山",
-    //     isIncome: true,
-    //     isIncomeMeaning: "收入",
-    //     amount: 1.19,
-    //     payeeName: "余额宝",
-    //     tradeStatusMeaning: "交易成功",
-    //     tradeStatus: "SUCEED",
-    //     tradeOrderNum: "2023022313",
-    //     merchantOrderNum: "1589234234234", //
-    //     remark: "备注1"
-    //   },
-    //   {
-    //     tradeTime: "2023-02-23 21:23:33",
-    //     tradeCategoryName: "餐饮",
-    //     tradeCategoryCode: "eating",
-    //     tradeParter: "2023-02-23 21:23:33",
-    //     tradeAccount: "132423421xxxxx1234134",
-    //     tradeFood: "合肥黄山2",
-    //     isIncome: true,
-    //     isIncomeMeaning: "收入",
-    //     amount: 1.19,
-    //     payeeName: "余额宝",
-    //     tradeStatusMeaning: "交易成功",
-    //     tradeStatus: "SUCEED",
-    //     tradeOrderNum: "2023022313",
-    //     merchantOrderNum: "1589234234234", //
-    //     remark: "备注1"
-    //   }
-    // ];
     const tabs = [
       {
         key: "bill",
@@ -172,11 +137,11 @@ export default class BillChart extends Component {
     return (
       <div className='bill-chart-container'>
         <Tabs
-          activeKey={tabKey}
+          className='bill-tabs'
           tabs={tabs}
-          className='tabs'
-          onChange={(e) => {
-            this.setState({ tabKey: e });
+          activeKey={tabKey}
+          onChange={(el) => {
+            this.setState({ tabKey:el });
           }}
         />
       </div>
