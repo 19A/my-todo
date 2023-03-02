@@ -1,43 +1,59 @@
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import { DatePicker} from 'antd';
-import dayjs from 'dayjs';
+import React, { useState, useEffect, useCallback } from "react";
+import { DatePicker } from "antd";
+import dayjs from "dayjs";
+
 import { Line } from "@ant-design/plots";
 import Tabs from "@/components/Tabs";
-import { queryTotalApi } from '@/services'
+import { queryTotalApi } from "@/services";
 
-import './index.less';
+import "./index.less";
 
-const dateFormat = 'YYYY/MM/DD';
-const weekFormat = 'MM/DD';
-const monthFormat = 'yyyy-MM';
+const dateFormat = "YYYY/MM/DD";
+const weekFormat = "MM/DD";
+const monthFormat = "YYYY-MM";
+const yearFormat = "YYYY";
 
 const Analysis = () => {
-  const [stage, setStage] = useState('month');
-  const [analysis, setAnalysis]  = useState('expense') // Income
-  const [month,setMonth] = useState(new Date());
-  const [year,setYear] = useState(new Date());
+  const [stage, setStage] = useState("month");
+  const [analysis, setAnalysis] = useState("expense"); // Income
+  const [month, setMonth] = useState(dayjs(new Date()));
+  const [year, setYear] = useState(dayjs(new Date()));
   const [total, setTotal] = useState({
     children: [],
     regardlessIncomeExpenditure: 0,
     totalIncome: 0,
     totalPay: 0,
-    userName:""
-  }); 
+    userName: ""
+  });
 
   useEffect(() => {
     queryTotal();
-  }, [])
+  }, [stage, month, year]);
 
-  const queryTotal = async () => {
-     const res = await queryTotalApi({
-      statisticType:stage === 'month'? 1 : 2,
-      statisticDate:stage === 'month'? month : year
-    })
-    if(res.data){
+  const queryTotal = useCallback(async () => {
+    const res = await queryTotalApi({
+      statisticType: stage === "month" ? 1 : 2,
+      statisticDate:
+        stage === "month"
+          ? dayjs(month).format(monthFormat)
+          : dayjs(year).format(yearFormat)
+    });
+    if (res.data) {
       setTotal(res.data);
     }
-  }
+  }, [month, year, stage]);
+  // const queryTotal = async() => {
+  //   const res = await queryTotalApi({
+  //     statisticType: stage === "month" ? 1 : 2,
+  //     statisticDate:
+  //       stage === "month"
+  //         ? dayjs(month).format(monthFormat)
+  //         : dayjs(year).format(yearFormat)
+  //   });
+  //   if (res.data) {
+  //     setTotal(res.data);
+  //   }
+  // };
 
   const data = [
     {
@@ -109,98 +125,106 @@ const Analysis = () => {
       }
     ]
   };
-  const switchDate = (time,str) => {
-    console.log('time',time,'str',str,'stage',stage);
-    if(stage === 'month'){
-      setMonth(str)
-    }else{
-      setYear(str)
+  const switchDate = (time, str) => {
+    console.log("time", time, "str", str, "stage", stage);
+    if (stage === "month") {
+      setMonth(time);
+    } else {
+      setYear(time);
     }
-  }
+  };
   // console.log('stage',stage);
   // console.log('analysis',analysis);
   const getTabs = () => {
     const getItem = (type) => {
       return (
         <>
-          <div className='total'>
-            <div className='wrapper'>
-              <span className='word'>{type==='month'?'月支出':'年支出'}</span>
-              <span className='money'>{total.totalPay}</span>
-              <span className='calc'>共100笔</span>
+          <div className='statistic'>
+            <div className='total'>
+              <div className='wrapper'>
+                <span className='word'>
+                  {type === "month" ? "月支出" : "年支出"}
+                </span>
+                <span className='money'>{total.totalPay || 0} 元</span>
+                <span className='calc'>共100笔</span>
+              </div>
+              <div className='wrapper'>
+                <span className='word'>
+                  {type === "month" ? "月收入" : "年收入"}
+                </span>
+                <span className='money'>{total.totalIncome || 0} 元</span>
+                <span className='calc'>共0笔</span>
+              </div>
+              <div className='wrapper'>
+                <span className='word'>
+                  {type === "month" ? "不计支出" : "不计支出"}
+                </span>
+                <span className='money'>{total.regardlessIncomeExpenditure || 0} 元</span>
+                <span className='calc'>共0笔</span>
+              </div>
             </div>
-            <div className='wrapper'>
-              <span className='word'>{type==='month'?'年收入':'年收入'}</span>
-              <span className='money'>{total.totalIncome}</span>
-              <span className='calc'>共0笔</span>
+            <div className='date'>
+                <DatePicker
+                  value={type === "month" ? month : year}
+                  picker={type === "month" ? "month" : "year"}
+                  onChange={switchDate}
+                />
             </div>
-          </div>
-          <div className='date'>
-            {<DatePicker 
-                value={type==='month'? month:year} 
-                picker={type==='month'?'month':'year'} 
-                onChange={switchDate}/>}
           </div>
           <div>
-        <Tabs   
-          className={'analysis-tabs'}
-          activeKey={analysis}
-          tabs={getAnalysisTab()}
-          onChange={setAnalysis}/>
-      </div>
+            <Tabs
+              className={"analysis-tabs"}
+              activeKey={analysis}
+              tabs={getAnalysisTab()}
+              onChange={setAnalysis}
+            />
+          </div>
         </>
-      )
-    }
-   return [
-      {
-        key:'month',
-        label:'月度xxx',
-        children: getItem('month')
-      },
-      {
-        key:'year',
-        label:'年度xxxx',
-        children: getItem('year')
-      },
-      
-    ]
-  }
-  const getAnalysisTab = () => {
-    const getItem = () => {
-        return < Line {
-            ...config
-          }
-          />;
-    }
+      );
+    };
     return [
       {
-        key:'expense',
-        label:'支出分析',
-        children: getItem('expense')
+        key: "month",
+        label: "月度xxx",
+        children: getItem("month")
       },
       {
-        key:'income',
-        label:'收入分析',
-        children: getItem('income')
+        key: "year",
+        label: "年度xxxx",
+        children: getItem("year")
+      }
+    ];
+  };
+  const getAnalysisTab = () => {
+    const getItem = () => {
+      // return <Line {...config} />;
+      return <div/>;
+    };
+    return [
+      {
+        key: "expense",
+        label: "支出分析",
+        children: getItem("expense")
       },
-      
-    ]
-  }
-  return <>
- <>
-  <Tabs
-    className={'stage-tabs'}
-    activeKey={stage}
-    tabs={getTabs()}
-    onChange={(a)=>{
-      setStage(a);
-      queryTotal()
-    }}
-  />
-  
- </>
-  </>
+      {
+        key: "income",
+        label: "收入分析",
+        children: getItem("income")
+      }
+    ];
+  };
+  return (
+    <>
+      <>
+        <Tabs
+          className={"stage-tabs"}
+          activeKey={stage}
+          tabs={getTabs()}
+          onChange={setStage}
+        />
+      </>
+    </>
+  );
 };
 
 export default Analysis;
-

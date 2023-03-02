@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Space, Card, Table, Modal } from "antd";
 import Tabs from "@/components/Tabs";
 // import { data } from "@/mock/chart.js";
+import { PieChartOutlined, MoneyCollectOutlined } from '@ant-design/icons';
 import { queryBillListApi } from "@/services";
 import DemoLine from "./chart";
 
@@ -21,7 +22,7 @@ export default class BillChart extends Component {
   async queryBillList() {
     const res = await queryBillListApi({
       pageNum: 1,
-      pageSize: 10
+      pageSize: 9999
     });
     console.log("res", res);
     if (res) {
@@ -61,7 +62,6 @@ export default class BillChart extends Component {
         </div>
         {/* <p>{trade_state}</p> */}
         <p className='time'>{createTime}</p>
-        
       </div>
     );
   };
@@ -113,23 +113,23 @@ export default class BillChart extends Component {
       {
         key: "bill",
         label: `账单`,
+        icon:<MoneyCollectOutlined />,
         children: (
           <Table
             className='bill-table'
             showHeader={false}
             columns={columns}
             dataSource={billData}
-            pagination={true}
+            pagination={false}
           />
         )
       },
       {
         key: "chart",
         label: `收支分析`,
+        icon:<PieChartOutlined />,
         children: (
-          <Card>
             <DemoLine />
-          </Card>
         )
       }
     ];
@@ -141,7 +141,7 @@ export default class BillChart extends Component {
           tabs={tabs}
           activeKey={tabKey}
           onChange={(el) => {
-            this.setState({ tabKey:el });
+            this.setState({ tabKey: el });
           }}
         />
       </div>

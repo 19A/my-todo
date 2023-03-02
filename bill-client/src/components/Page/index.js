@@ -13,7 +13,7 @@ import { Dropdown, Modal, Form, Input, Menu, Button, Icon } from "antd";
 import { SideBar } from "@/components/SideBar";
 import { getUserToken, clearUser } from "@@/src/utils";
 
-import defaultAvatar from "@/assets/avatar.jpg";
+import defaultAvatar from "@/assets/avatar_pro.png";
 import { pwdModifyApi } from "@/services";
 
 import "./index.less";

@@ -22,9 +22,9 @@ import {
   Form
 } from "antd";
 
-import { getUserInfo } from "@/utils";
+import { getUserInfo, getUserToken } from "@/utils";
 import { queryUserApi, updateUserApi } from "@/services";
-import defaultAvatar from "@/assets/avatar.jpg";
+import defaultAvatar from "@/assets/avatar_pro.png";
 import "./index.less";
 
 const layout = {
@@ -165,6 +165,7 @@ const EditUser = (props) => {
 };
 
 const Person = () => {
+  const token = getUserToken();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     avator: defaultAvatar,
@@ -221,6 +222,7 @@ const Person = () => {
               listType='picture-card'
               className='avatar-uploader'
               showUploadList={false}
+              headers={{token, Authorization:token}}
               action='http://1.117.165.71/x-api/file/uploadFile'
               beforeUpload={beforeUpload}
               onChange={handleChange}

@@ -3,6 +3,7 @@ import { Provider } from "mobx-react";
 import ReactDOM from "react-dom/client";
 import { ConfigProvider, notification } from "antd";
 // import locale from "antd/es/date-picker/locale/zh_CN";
+// import "dayjs/locale/zh-cn";
 import zhCN from "antd/locale/zh_CN";
 import { Route, Switch, Redirect, HashRouter } from "react-router-dom";
 
