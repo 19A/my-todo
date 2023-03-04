@@ -179,24 +179,33 @@ const Person = () => {
   const formRef = useRef();
   // const { children, userInfo } = props;
   const handleChange = (info) => {
-    debugger;
     const { sysUserId: userId } = getUserInfo();
+    debugger;
     if (info.file.status === "uploading") {
       setLoading(true);
       return;
     }
     if (info.file.status === "done") {
       // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (url) => {
-        setLoading(false);
-        updateUserApi({
-          userId,
-          avator: url
-        }).then((res) => {
-          // if(res){}
-        });
-        // setImageUrl(url);
+      const url = info.file?.response?.data;
+      console.log('url',url);
+      if(!url) return;
+      // {"sysUserId":"cf06fa1f-aaf8-450f-b432-8b00a28e4ec3","sysUserCode":"zhubiao","sysUserName":"朱彪"}
+      updateUserApi({
+        userId,
+        useCode: "zhubiao",
+        // userId: "cf06fa1f-aaf8-450f-b432-8b00a28e4ec3"
+        userName: "朱彪",
+        avator: url
+      }).then((res) => {
+        // if(res){}
+        setLoading(false)
       });
+      // getBase64(info.file.originFileObj, (url) => {
+      //   setLoading(false);
+     
+      //   // setImageUrl(url);
+      // });
     }
   };
 
@@ -218,7 +227,7 @@ const Person = () => {
           <div className='text'>
             {/* <Avatar src={user.avator || defaultAvatar} /> */}
             <Upload
-              name='avatar'
+              name='file'
               listType='picture-card'
               className='avatar-uploader'
               showUploadList={false}
@@ -230,6 +239,7 @@ const Person = () => {
               {user.avator ? (
                 <img
                   src={user.avator}
+                  src={'https://xqq-bucket.oss-cn-beijing.aliyuncs.com/20230303/1677817556447.png'}
                   alt='avatar'
                   style={{
                     width: "100%"

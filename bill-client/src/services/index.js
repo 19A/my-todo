@@ -94,6 +94,7 @@ export function queryUserApi(userId) {
  * @description 用户数据更新
  * @param {*}
  */
-export function updateUserApi({ userId, ...data }) {
-  return put(`/sysUser/${userId}}`, data);
+export function updateUserApi(data) {
+  console.log('data.usrId',data.userId)
+  return put(`/sysUser/${data.userId}}`, data);
 }
