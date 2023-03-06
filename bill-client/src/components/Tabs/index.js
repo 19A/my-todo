@@ -12,6 +12,7 @@ export default class Tabs extends Component {
         <div className='tab-tags'>
           {tabs.map((i) => (
             <div
+              key={i.key}
               className={activeKey === i.key ? "active tab-tag" : "tab-tag"}
               onClick={() => {
                 this.props.onChange(i.key);
