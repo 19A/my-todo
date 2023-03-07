@@ -91,6 +91,13 @@ function back() {
   window.location.hash = "#/login";
 }
 
+function handleNotifyError({code, msg}) {
+  if (msg && Number(code) !== 200) {
+    const _msg = typeof msg === "string" ? msg : JSON.stringify(msg);
+    notification.error({ description:_msg, duration: ERROR_DURATION });
+  }
+}
+
 // 添加响应拦截器
 service.interceptors.response.use(
   function (response) {
@@ -105,13 +112,8 @@ service.interceptors.response.use(
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
-    const { code, message } = error.response.data;
+    handleNotifyError(error.response.data)
     // 统一弹框抛错
-    if (message && code !== 200) {
-      const msg =
-        typeof message === "string" ? message : JSON.stringify(message);
-      notification.error({ message: msg, duration: ERROR_DURATION });
-    }
     switch (error.response.status) {
       // 401: 未登录
       // 未登录则跳转登录页面，并携带当前页面的路径
@@ -164,15 +166,8 @@ export function get(url, params) {
     service
       .get(url, { params })
       .then((response) => {
-        const { code, message } = response.data;
-        if (message && code !== 200) {
-          const msg =
-            typeof message === "string" ? message : JSON.stringify(message);
-          notification.error({ message: msg, duration: ERROR_DURATION });
-          resolve();
-        } else {
+          handleNotifyError(response.data);
           resolve(response.data);
-        }
       })
       .catch((error) => {
         reject(error.data);
@@ -187,15 +182,8 @@ export function post(url, params) {
         ...params
       })
       .then((response) => {
-        const { code, message } = response.data;
-        if (message && code !== 200) {
-          const msg =
-            typeof message === "string" ? message : JSON.stringify(message);
-          notification.error({ message: msg, duration: ERROR_DURATION });
-          resolve();
-        } else {
-          resolve(response.data);
-        }
+        handleNotifyError(response.data);
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error.data);
@@ -210,15 +198,8 @@ export function put(url, params) {
         ...params
       })
       .then((response) => {
-        const { code, message } = response.data;
-        if (message && code !== 200) {
-          const msg =
-            typeof message === "string" ? message : JSON.stringify(message);
-          notification.error({ message: msg, duration: ERROR_DURATION });
-          resolve();
-        } else {
-          resolve(response.data);
-        }
+        handleNotifyError(response.data);
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error.data);
