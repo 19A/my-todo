@@ -1,6 +1,6 @@
 import react, { Component, Fragment, createRef } from "react";
 import { withRouter } from "react-router-dom";
-import { Space } from "antd";
+import { Avatar, Space } from "antd";
 import {
   AppstoreOutlined,
   MenuUnfoldOutlined,
@@ -11,7 +11,7 @@ import {
 } from "@ant-design/icons";
 import { Dropdown, Modal, Form, Input, Menu, Button, Icon } from "antd";
 import { SideBar } from "@/components/SideBar";
-import { getUserToken, clearUser } from "@@/src/utils";
+import { getUserToken, getUserInfo, clearUser } from "@@/src/utils";
 
 import defaultAvatar from "@/assets/avatar_pro.png";
 import { pwdModifyApi } from "@/services";
@@ -173,7 +173,8 @@ export class Page extends Component {
             </div>
             <div className='right'>
               <Dropdown menu={{ items: this.getOverlay() }}>
-                <span>
+                <Avatar  size='large' src={getUserInfo()?.avator || defaultAvatar}/>
+                {/* <span>
                   <Space>
                     <img
                       alt='用户头像'
@@ -181,8 +182,9 @@ export class Page extends Component {
                       className='user-avatar'
                       src={defaultAvatar}
                     />
+                    
                   </Space>
-                </span>
+                </span> */}
               </Dropdown>
             </div>
           </div>

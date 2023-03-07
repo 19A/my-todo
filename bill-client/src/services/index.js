@@ -87,7 +87,7 @@ export function queryTotalApi(data) {
  * @param {*}
  */
 export function queryUserApi(userId) {
-  return get(`/sysUser/${userId}}`);
+  return get(`/sysUser/${userId}`);
 }
 
 /**
@@ -96,5 +96,5 @@ export function queryUserApi(userId) {
  */
 export function updateUserApi(data) {
   console.log('data.usrId',data.userId)
-  return put(`/sysUser/${data.userId}}`, data);
+  return put(`/sysUser/${data.userId}`, data);
 }

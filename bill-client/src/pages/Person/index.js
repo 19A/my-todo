@@ -180,7 +180,6 @@ const Person = () => {
   // const { children, userInfo } = props;
   const handleChange = (info) => {
     const { sysUserId: userId } = getUserInfo();
-    debugger;
     if (info.file.status === "uploading") {
       setLoading(true);
       return;
@@ -199,6 +198,7 @@ const Person = () => {
         avator: url
       }).then((res) => {
         // if(res){}
+        queryUser();
         setLoading(false)
       });
       // getBase64(info.file.originFileObj, (url) => {
@@ -210,14 +210,18 @@ const Person = () => {
   };
 
   useEffect(() => {
+    queryUser();
+  }, []);
+
+  const queryUser = () => {
     const { sysUserId: userId } = getUserInfo();
-    console.log("userId", userId);
+    // console.log("userId", userId);
     queryUserApi(userId).then((res) => {
       if (res.data) {
         setUser(res.data);
       }
     });
-  }, []);
+  }
 
   return (
     <div className='person-container'>
@@ -231,20 +235,24 @@ const Person = () => {
               listType='picture-card'
               className='avatar-uploader'
               showUploadList={false}
+              onChange={handleChange}
+              beforeUpload={beforeUpload}
               headers={{token, Authorization:token}}
               action='http://1.117.165.71/x-api/file/uploadFile'
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
             >
               {user.avator ? (
-                <img
-                  src={user.avator}
-                  src={'https://xqq-bucket.oss-cn-beijing.aliyuncs.com/20230303/1677817556447.png'}
-                  alt='avatar'
-                  style={{
-                    width: "100%"
-                  }}
-                />
+                // <img
+                //   src={user.avator}
+                //   alt='avatar'
+                //   style={{
+                //     width: "100%"
+                //   }}
+                // />
+                <Avatar     
+                  size='large'
+                  style={{width: "100%",height:'100%'}}
+                  src={user.avator || defaultAvatar}
+                  />
               ) : (
                 <div>
                   {loading ? <LoadingOutlined /> : <PlusOutlined />}

@@ -12,7 +12,7 @@ import {
   notification
 } from "antd";
 
-import { loginApi, registerApi } from "@/services/index.js";
+import { loginApi, registerApi, queryUserApi } from "@/services/index.js";
 
 import "./login.less";
 // import styles from "./login.less";
@@ -52,8 +52,8 @@ export default class Login extends Component {
   onLogin = async (data) => {
     const res = await loginApi(data);
     if (res) {
-      // 登录成功
-      this.saveUser(res);
+      // 登录成功 查询用户信息
+      this.queryUser(res);
       notification.success({
         message: "登录成功！"
       });
@@ -61,15 +61,31 @@ export default class Login extends Component {
     }
   };
 
-  saveUser(data) {
+  queryUser(data) {
+
+    // const {
+    //   data: { token, ...userInfo }
+    // } = data;
+    // 存入mobx和localStorage
+    // this.props.store.token = token;
+    // this.props.store.userInfo = userInfo;
+    // localStorage.setItem("token", token);
+    // localStorage.setItem("userInfo", JSON.stringify(userInfo));
     const {
       data: { token, ...userInfo }
     } = data;
-    // 存入mobx和localStorage
     this.props.store.token = token;
-    this.props.store.userInfo = userInfo;
     localStorage.setItem("token", token);
-    localStorage.setItem("userInfo", JSON.stringify(userInfo));
+    queryUserApi(userInfo.sysUserId).then(res => {
+      const { data: userOtherInfo } = res;
+      if (res.data) {
+        const user = { ...userInfo, ...userOtherInfo}
+         // 存入mobx和localStorage
+        this.props.store.userInfo = user;
+        localStorage.setItem("userInfo", JSON.stringify(user));
+      }
+    });
+   
   }
 
   onRegister = async (data) => {

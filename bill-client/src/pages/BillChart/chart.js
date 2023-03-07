@@ -145,21 +145,30 @@ const Analysis = () => {
                 <span className='word'>
                   {type === "month" ? "月支出" : "年支出"}
                 </span>
-                <span className='money'>{total.totalPay || 0} 元</span>
+                <span className='money'>
+                  <span className='money-num'>{total.totalPay || 0}</span>
+                  <span className='money-unit'>元</span>
+                </span>
                 <span className='calc'>共100笔</span>
               </div>
               <div className='wrapper'>
                 <span className='word'>
                   {type === "month" ? "月收入" : "年收入"}
                 </span>
-                <span className='money'>{total.totalIncome || 0} 元</span>
+                <span className='money'>
+                  <span className='money-num'>{total.totalIncome || 0}</span>
+                  <span className='money-unit'>元</span>
+                </span>
                 <span className='calc'>共0笔</span>
               </div>
               <div className='wrapper'>
                 <span className='word'>
                   {type === "month" ? "不计支出" : "不计支出"}
                 </span>
-                <span className='money'>{total.regardlessIncomeExpenditure || 0} 元</span>
+                <span className='money'>
+                  <span className='money-num'>{total.regardlessIncomeExpenditure || 0}</span>
+                  <span className='money-unit'>元</span>
+                </span>
                 <span className='calc'>共0笔</span>
               </div>
             </div>
