@@ -98,3 +98,12 @@ export function updateUserApi(data) {
   console.log('data.usrId',data.userId)
   return put(`/sysUser/${data.userId}`, data);
 }
+
+/**
+ * @description 微信验证手机后六位数
+ * @param {*}
+ */
+export function wechatVerifyApi(data) {
+  return post(`/XXXX/XXXX`, data);
+}
+
