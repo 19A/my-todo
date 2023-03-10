@@ -247,14 +247,7 @@ const Analysis = () => {
         {!!total.children?.length && (
           <div className='associate-container'>
             <div className='associate-head' onClick={() => setToggle(!toggle)}>
-              {/* <span
-                className={`associate-body ${
-                  toggle ? "slide-down" : "slide-up"
-                }`}
-              >
-                {}
-              </span> */}
-              {toggle ? "查看关联单据" : "收起关联单据"}
+              {toggle ? "收起关联单据" : "查看关联单据"}
             </div>
             <div
               className={`associate-body ${toggle ? "slide-down" : "slide-up"}`}

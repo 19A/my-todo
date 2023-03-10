@@ -76,7 +76,7 @@ export function queryBillListApi(data) {
  * @description 查询账单详情
  * @param {} data.statisticType 统计类型 1按月 2按年
  * @param {} data.statisticDate类型为1时传：yyyy-MM;为2时传yyyy
- * 
+ *
  */
 export function queryTotalApi(data) {
   return get(`/bill/statistics/total`, data);
@@ -95,15 +95,22 @@ export function queryUserApi(userId) {
  * @param {*}
  */
 export function updateUserApi(data) {
-  console.log('data.usrId',data.userId)
+  console.log("data.usrId", data.userId);
   return put(`/sysUser/${data.userId}`, data);
+}
+
+/**
+ * @description 微信压缩文件指定地址
+ * @param {*}
+ */
+export function wechatUrlApi() {
+  return get(`/bill/weChatBill/unzip`);
 }
 
 /**
  * @description 微信验证手机后六位数
  * @param {*}
  */
-export function wechatVerifyApi(data) {
-  return post(`/XXXX/XXXX`, data);
+export function wechatVerifyApi({ billTaskId, ...data }) {
+  return post(`/bill/weChatBill/zip/statistics/${billTaskId}`, data);
 }
-

@@ -104,7 +104,6 @@
 }
 
 .associate-body {
-  max-height: 0;
   overflow: hidden;
 }
 
@@ -121,11 +120,13 @@
 /* 定义展开动画效果 */
 .associate-body.slide-down {
   animation: slide-down 1s;
+  max-height: 666px;
 }
 
 /* 定义收起动画效果 */
 .associate-body.slide-up {
   animation: slide-up 0.5s;
+  max-height: 0;
 }
 
 /* 展开动画效果 */

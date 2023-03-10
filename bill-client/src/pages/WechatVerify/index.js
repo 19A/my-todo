@@ -1,20 +1,40 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Form, Input, Button } from "antd";
+import { Form, Input, Button, notification } from "antd";
 
 import qs from "qs";
 import { withRouter } from "react-router-dom";
 
-import { wechatVerifyApi } from "../../services/index";
+import { wechatUrlApi, wechatVerifyApi } from "../../services/index";
 
 const WechatVerify = (props) => {
   const {
+    // history,
     location: { search }
   } = props;
   const searchObj = qs.parse(search.substr(1));
+
+  // useEffect(() => {
+  //   // 跳转后端指定页面
+  //   wechatUrlApi().then((res) => {
+  //     if(res.data){
+  //   history.push()
+
+  //     }
+  //   });
+  // }, []);
   const onFinish = async (values) => {
+    const { id: billTaskId } = searchObj;
     console.log("Success:", values, "props", props, "searchObj", searchObj);
-    if (values?.verifyCode?.length === 6) {
-      const res = await wechatVerifyApi(values);
+    if (values?.unzipPassword?.length === 6) {
+      const res = await wechatVerifyApi({
+        ...values,
+        billTaskId
+      });
+      if (res) {
+        notification.success({
+          description: "开始同步"
+        });
+      }
     } else {
       alert("请输入有效数据");
     }
@@ -46,7 +66,7 @@ const WechatVerify = (props) => {
       >
         <Form.Item
           label='输入微信解压码, 同步微信账单'
-          name='verifyCode'
+          name='unzipPassword'
           rules={[
             {
               required: true,

@@ -91,13 +91,15 @@ service.interceptors.request.use(
 function back() {
   // 获取当前url，登录后自动跳转
   const historyHref = window.location.href;
-  window.location.hash = `#/login?redirectUrl=${encodeURIComponent(historyHref)}`;
+  window.location.hash = `#/login?redirectUrl=${encodeURIComponent(
+    historyHref
+  )}`;
 }
 
-function handleNotifyError({code, msg}) {
+function handleNotifyError({ code, msg }) {
   if (msg && Number(code) !== 200) {
     const _msg = typeof msg === "string" ? msg : JSON.stringify(msg);
-    notification.error({ description:_msg, duration: ERROR_DURATION });
+    notification.error({ description: _msg, duration: ERROR_DURATION });
   }
 }
 
@@ -113,7 +115,7 @@ service.interceptors.response.use(
   },
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
-    handleNotifyError(error.response.data)
+    handleNotifyError(error.response.data);
     // 统一弹框抛错
     switch (error.response.status) {
       // 401: 未登录
@@ -132,12 +134,6 @@ service.interceptors.response.use(
         // 跳转登录页面，并将要浏览的页面fullPath传过去，登录成功后跳转需要访问的页面
         setTimeout(() => {
           back();
-          // router.replace({
-          //   path: "/login",
-          //   query: {
-          //     redirect: router.currentRoute.fullPath
-          //   }
-          // });
         }, REDIRECT_DUTATION);
         break;
       // 404请求不存在
@@ -167,8 +163,8 @@ export function get(url, params) {
     service
       .get(url, { params })
       .then((response) => {
-          handleNotifyError(response.data);
-          resolve(response.data);
+        handleNotifyError(response.data);
+        resolve(response.data);
       })
       .catch((error) => {
         reject(error.data);
@@ -184,7 +180,10 @@ export function post(url, params) {
       })
       .then((response) => {
         handleNotifyError(response.data);
-        resolve(response.data);
+        // 微信账单同步接口报错特殊处理
+        if (response.data.code === "200") {
+          resolve(response.data);
+        }
       })
       .catch((error) => {
         reject(error.data);
