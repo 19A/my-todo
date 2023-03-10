@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Space, Card, Table, Modal } from "antd";
 import Tabs from "@/components/Tabs";
 // import { data } from "@/mock/chart.js";
-import { PieChartOutlined, MoneyCollectOutlined } from '@ant-design/icons';
+import { PieChartOutlined, MoneyCollectOutlined } from "@ant-design/icons";
 import { queryBillListApi } from "@/services";
 import DemoLine from "./chart";
 
@@ -33,7 +33,7 @@ export default class BillChart extends Component {
   getTableItem = (record) => {
     const {
       bill_id,
-      trade_time,
+      tradeTime,
       tradeClassify,
       trader,
       trader_account,
@@ -60,8 +60,7 @@ export default class BillChart extends Component {
           {tradeClassify}
           {remark}
         </div>
-        {/* <p>{trade_state}</p> */}
-        <p className='time'>{createTime}</p>
+        <p className='time'>{tradeTime}</p>
       </div>
     );
   };
@@ -113,7 +112,7 @@ export default class BillChart extends Component {
       {
         key: "bill",
         label: `账单`,
-        icon:<MoneyCollectOutlined />,
+        icon: <MoneyCollectOutlined />,
         children: (
           <Table
             className='bill-table'
@@ -127,10 +126,8 @@ export default class BillChart extends Component {
       {
         key: "chart",
         label: `收支分析`,
-        icon:<PieChartOutlined />,
-        children: (
-            <DemoLine />
-        )
+        icon: <PieChartOutlined />,
+        children: <DemoLine />
       }
     ];
 
