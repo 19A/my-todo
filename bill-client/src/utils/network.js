@@ -145,10 +145,10 @@ service.interceptors.response.use(
         // });
         break;
       default:
-        notification.error({
-          message: error.response.statusText,
-          duration: ERROR_DURATION
-        });
+      // notification.error({
+      //   message: error.response.statusText,
+      //   duration: ERROR_DURATION
+      // });
     }
     return Promise.reject(error);
   }
