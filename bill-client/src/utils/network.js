@@ -14,6 +14,7 @@ import { getUserToken, getUserInfo, clearUser } from "./index";
 
 const baseURL = "/x-api";
 const ERROR_DURATION = 2;
+const REDIRECT_DUTATION = 3000;
 const service = new axios.create({
   baseURL,
   timeout: 55000 // 超时时间
@@ -88,7 +89,9 @@ service.interceptors.request.use(
 );
 
 function back() {
-  window.location.hash = "#/login";
+  // 获取当前url，登录后自动跳转
+  const historyHref = window.location.href;
+  window.location.hash = `#/login?redirectUrl=${encodeURIComponent(historyHref)}`;
 }
 
 function handleNotifyError({code, msg}) {
@@ -102,7 +105,6 @@ function handleNotifyError({code, msg}) {
 service.interceptors.response.use(
   function (response) {
     // 2xx 范围内的状态码都会触发该函数。
-    // 对响应数据做点什么
     if (response.status === 200) {
       return Promise.resolve(response);
     } else {
@@ -111,7 +113,6 @@ service.interceptors.response.use(
   },
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
-    // 对响应错误做点什么
     handleNotifyError(error.response.data)
     // 统一弹框抛错
     switch (error.response.status) {
@@ -121,7 +122,7 @@ service.interceptors.response.use(
       case 401:
         setTimeout(() => {
           back();
-        }, 3000);
+        }, REDIRECT_DUTATION);
         break;
       case 403:
         clearUser();
@@ -137,7 +138,7 @@ service.interceptors.response.use(
           //     redirect: router.currentRoute.fullPath
           //   }
           // });
-        }, 3000);
+        }, REDIRECT_DUTATION);
         break;
       // 404请求不存在
       case 404:

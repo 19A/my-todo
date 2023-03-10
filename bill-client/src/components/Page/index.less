@@ -3,12 +3,13 @@
 // 变量
 @head-height: 65px;
 @page-height: calc(100vh - @head-height);
+@content-height: calc(100vh - @head-height - 60px);
 
 // 根页面
 .page-container {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;
   // background: #ccc;
   // 头
   .header-container {
@@ -68,7 +69,7 @@
   }
   // 主体内容
   .content-container {
-    height: @page-height;
+    height: @content-height;
     // padding: 10px;
     overflow: auto;
   }

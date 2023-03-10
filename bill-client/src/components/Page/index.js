@@ -1,6 +1,6 @@
 import react, { Component, Fragment, createRef } from "react";
 import { withRouter } from "react-router-dom";
-import { Avatar, Space } from "antd";
+import { Avatar, notification, Space } from "antd";
 import {
   AppstoreOutlined,
   MenuUnfoldOutlined,
@@ -9,7 +9,7 @@ import {
   MenuOutlined,
   SettingOutlined
 } from "@ant-design/icons";
-import { Dropdown, Modal, Form, Input, Menu, Button, Icon } from "antd";
+import { Dropdown, Modal, Form, Input, Menu, Button, Icon, Result } from "antd";
 import { SideBar } from "@/components/SideBar";
 import { getUserToken, getUserInfo, clearUser } from "@@/src/utils";
 
@@ -38,13 +38,6 @@ export class Page extends Component {
       collapsed: true,
       menuShow: false
     };
-  }
-
-  componentDidMount() {
-    const token = getUserToken();
-    if (!token) {
-      this.props.history.push("/login");
-    }
   }
 
   formRef = createRef();
@@ -114,7 +107,6 @@ export class Page extends Component {
         if (!validatesRes) return Promise.reject();
         const values = formEntity.getFieldsValue();
         const res = await pwdModifyApi({ ...values });
-        debugger;
         if (!res) return Promise.reject();
         //密码修改成功 跳转重新登录
         window.alert("密码修改成功");
@@ -157,9 +149,22 @@ export class Page extends Component {
     });
   };
 
+  notFound = () => <Result
+    status="403"
+    title="403"
+    subTitle="Sorry, you are not authorized to access this page."
+    extra={<Button type="primary" onClick={() => {
+      this.props.history.push("/login")
+    }}>Back Login</Button>}
+  />
+
   render() {
     const { collapsed, menuShow } = this.state;
     const { showHeader = true, children } = this.props;
+    const token = getUserToken();
+    if (!token) {
+      return this.notFound();
+    }
     return (
       <div className='page-container'>
         {showHeader && (
@@ -174,17 +179,6 @@ export class Page extends Component {
             <div className='right'>
               <Dropdown menu={{ items: this.getOverlay() }}>
                 <Avatar  size='large' src={getUserInfo()?.avator || defaultAvatar}/>
-                {/* <span>
-                  <Space>
-                    <img
-                      alt='用户头像'
-                      referrer='no-referrer'
-                      className='user-avatar'
-                      src={defaultAvatar}
-                    />
-                    
-                  </Space>
-                </span> */}
               </Dropdown>
             </div>
           </div>

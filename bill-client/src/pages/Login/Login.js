@@ -11,12 +11,11 @@ import {
   Space,
   notification
 } from "antd";
+import qs from 'qs';
 
 import { loginApi, registerApi, queryUserApi } from "@/services/index.js";
 
 import "./login.less";
-// import styles from "./login.less";
-const baseURL = "https://login";
 
 const defaultFormStyle = {
   // labelCol: { span: 8 },
@@ -50,18 +49,27 @@ export default class Login extends Component {
 
   // 登录
   onLogin = async (data) => {
+    const { location:{search} } = this.props;
     const res = await loginApi(data);
-    if (res) {
+    if (res.data) {
       // 登录成功 查询用户信息
-      this.queryUser(res);
-      notification.success({
-        message: "登录成功！"
-      });
-      this.props.history.push("/bill-chart");
+      const user = await this.queryUser(res);
+      if(user){
+        const { redirectUrl } = qs.parse(search.substr(1));
+        if(redirectUrl){
+          const url = decodeURIComponent(redirectUrl);
+          window.location.href = url;
+        }else{
+          this.props.history.push("/bill-chart");
+        }
+        notification.success({
+          message: "登录成功！"
+        });
+      }
     }
   };
 
-  queryUser(data) {
+  async queryUser(data) {
 
     // const {
     //   data: { token, ...userInfo }
@@ -76,16 +84,15 @@ export default class Login extends Component {
     } = data;
     this.props.store.token = token;
     localStorage.setItem("token", token);
-    queryUserApi(userInfo.sysUserId).then(res => {
-      const { data: userOtherInfo } = res;
-      if (res.data) {
-        const user = { ...userInfo, ...userOtherInfo}
-         // 存入mobx和localStorage
-        this.props.store.userInfo = user;
-        localStorage.setItem("userInfo", JSON.stringify(user));
-      }
-    });
-   
+    const res = await queryUserApi(userInfo.sysUserId);
+    const { data: userOtherInfo } = res;
+    if (res.data) {
+      const user = { ...userInfo, ...userOtherInfo}
+        // 存入mobx和localStorage
+      this.props.store.userInfo = user;
+      localStorage.setItem("userInfo", JSON.stringify(user));
+    }
+    return res.data;
   }
 
   onRegister = async (data) => {

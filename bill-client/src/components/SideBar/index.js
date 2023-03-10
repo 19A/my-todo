@@ -52,7 +52,6 @@ export class SideBar extends Component {
   };
 
   setMenuItem = ({ item, key, keyPath, domEvent }) => {
-    debugger;
     this.setState({ menuKey: key });
     this.props.history.push(`/${key}`);
   };

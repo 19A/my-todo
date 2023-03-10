@@ -15,6 +15,7 @@ const yearFormat = "YYYY";
 
 const Analysis = () => {
   const [stage, setStage] = useState("month");
+  const [toggle, setToggle] = useState(true); // 默认收起
   const [analysis, setAnalysis] = useState("expense"); // Income
   const [month, setMonth] = useState(dayjs(new Date()));
   const [year, setYear] = useState(dayjs(new Date()));
@@ -23,6 +24,9 @@ const Analysis = () => {
     regardlessIncomeExpenditure: 0,
     totalIncome: 0,
     totalPay: 0,
+    regardlessIncomeExpenditureCount: 0,
+    totalIncomeCount: 0,
+    totalPayCount: 0,
     userName: ""
   });
 
@@ -126,16 +130,14 @@ const Analysis = () => {
     ]
   };
   const switchDate = (time, str) => {
-    console.log("time", time, "str", str, "stage", stage);
     if (stage === "month") {
       setMonth(time);
     } else {
       setYear(time);
     }
   };
-  // console.log('stage',stage);
-  // console.log('analysis',analysis);
-  const getTabs = () => {
+  console.log("toggle", toggle);
+  const getTabs = (info, isChild) => {
     const getItem = (type) => {
       return (
         <>
@@ -146,60 +148,70 @@ const Analysis = () => {
                   {type === "month" ? "月支出" : "年支出"}
                 </span>
                 <span className='money'>
-                  <span className='money-num'>{total.totalPay || 0}</span>
+                  <span className='money-num'>{info.totalPay || 0}</span>
                   <span className='money-unit'>元</span>
                 </span>
-                <span className='calc'>共100笔</span>
+                <span className='calc'>共{info.totalPayCount || 0}笔</span>
               </div>
               <div className='wrapper'>
                 <span className='word'>
                   {type === "month" ? "月收入" : "年收入"}
                 </span>
                 <span className='money'>
-                  <span className='money-num'>{total.totalIncome || 0}</span>
+                  <span className='money-num'>{info.totalIncome || 0}</span>
                   <span className='money-unit'>元</span>
                 </span>
-                <span className='calc'>共0笔</span>
+                <span className='calc'>共{info.totalIncomeCount || 0}笔</span>
               </div>
               <div className='wrapper'>
                 <span className='word'>
                   {type === "month" ? "不计支出" : "不计支出"}
                 </span>
                 <span className='money'>
-                  <span className='money-num'>{total.regardlessIncomeExpenditure || 0}</span>
+                  <span className='money-num'>
+                    {info.regardlessIncomeExpenditure || 0}
+                  </span>
                   <span className='money-unit'>元</span>
                 </span>
-                <span className='calc'>共0笔</span>
+                <span className='calc'>
+                  共{info.regardlessIncomeExpenditureCount || 0}笔
+                </span>
               </div>
             </div>
-            <div className='date'>
+            {isChild ? (
+              <div className='date associate-user'>{info.userName}</div>
+            ) : (
+              <div className='date'>
                 <DatePicker
                   value={type === "month" ? month : year}
                   picker={type === "month" ? "month" : "year"}
                   onChange={switchDate}
                 />
+              </div>
+            )}
+          </div>
+          {!isChild && (
+            <div>
+              <Tabs
+                className={"analysis-tabs"}
+                activeKey={analysis}
+                tabs={getAnalysisTab()}
+                onChange={setAnalysis}
+              />
             </div>
-          </div>
-          <div>
-            <Tabs
-              className={"analysis-tabs"}
-              activeKey={analysis}
-              tabs={getAnalysisTab()}
-              onChange={setAnalysis}
-            />
-          </div>
+          )}
         </>
       );
     };
     return [
       {
         key: "month",
-        label: "月度xxx",
+        label: "月度",
         children: getItem("month")
       },
       {
         key: "year",
-        label: "年度xxxx",
+        label: "年度",
         children: getItem("year")
       }
     ];
@@ -207,7 +219,7 @@ const Analysis = () => {
   const getAnalysisTab = () => {
     const getItem = () => {
       // return <Line {...config} />;
-      return <div/>;
+      return <div />;
     };
     return [
       {
@@ -228,9 +240,36 @@ const Analysis = () => {
         <Tabs
           className={"stage-tabs"}
           activeKey={stage}
-          tabs={getTabs()}
+          tabs={getTabs(total)}
           onChange={setStage}
         />
+
+        {!!total.children?.length && (
+          <div className='associate-container'>
+            <div className='associate-head' onClick={() => setToggle(!toggle)}>
+              {/* <span
+                className={`associate-body ${
+                  toggle ? "slide-down" : "slide-up"
+                }`}
+              >
+                {}
+              </span> */}
+              {toggle ? "查看关联单据" : "收起关联单据"}
+            </div>
+            <div
+              className={`associate-body ${toggle ? "slide-down" : "slide-up"}`}
+            >
+              {(total.children || []).map((i) => (
+                <Tabs
+                  className={"stage-tabs"}
+                  activeKey={stage}
+                  tabs={getTabs(i, true)}
+                  onChange={setStage}
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </>
     </>
   );

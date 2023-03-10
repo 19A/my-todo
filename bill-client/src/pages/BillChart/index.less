@@ -4,11 +4,11 @@
   // background: @theme-color;
   width: 100%;
   height: 100%;
-  .bill-tabs{
+  .bill-tabs {
     width: 100%;
     height: 100%;
     padding-bottom: 60px;
-    >.tab-tags{
+    > .tab-tags {
       position: fixed;
       bottom: 0;
       width: 100%;
@@ -42,54 +42,110 @@
       }
     }
   }
-  .stage-tabs{
+  .stage-tabs {
     position: relative;
     text-align: center;
     background-color: @pay-color;
-    .tab-tags{
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ccc;
+    .tab-tags {
       padding: 30px 0 30px 15px;
-      .tab-tag{
+      .tab-tag {
         padding: 0 5px;
       }
     }
-    .statistic{
-      .date{
+    .statistic {
+      .date {
         position: absolute;
         right: 20px;
         top: 20px;
         max-width: 100px;
       }
-      .total{
-        color:#fff;
+      .total {
+        color: #fff;
         display: flex;
         flex-wrap: wrap;
         flex-direction: row;
         align-items: center;
         justify-content: space-around;
         // margin-top: 30px;
-      .wrapper{
-        display: flex;
-        flex-direction: column;
-        .word{
-          font-size: 14px;
-        }
-        .money{
-          font-size: 28px;
-          margin: 8px 0;
-          &-unit{
-            font-size:12px;
+        .wrapper {
+          display: flex;
+          flex-direction: column;
+          .word {
+            font-size: 14px;
+          }
+          .money {
+            font-size: 28px;
+            margin: 8px 0;
+            &-unit {
+              font-size: 12px;
+            }
+          }
+          .calc {
+            font-size: 12px;
+            opacity: 0.6;
           }
         }
-        .calc{
-          font-size: 12px;
-          opacity: 0.6;
-        }
-      }
-
       }
     }
   }
- 
-  .analysis-tabs{
+
+  .analysis-tabs {
+  }
+}
+
+.associate-user {
+  color: #fff;
+}
+.associate-container {
+  // width: 100%;
+  // height: auto;
+}
+
+.associate-body {
+  max-height: 0;
+  overflow: hidden;
+}
+
+.associate-head {
+  text-align: center;
+  padding: 10px;
+  color: #fff;
+  background: cornflowerblue;
+}
+
+// 注意：从0px到auto是无法计算的，因此无法形成过渡或动画效果
+// 如何解决 默认为收起状态但是取消收起动画效果？
+// 方法：点击时绑定CCS效果，而非渲染时添加！
+/* 定义展开动画效果 */
+.associate-body.slide-down {
+  animation: slide-down 1s;
+}
+
+/* 定义收起动画效果 */
+.associate-body.slide-up {
+  animation: slide-up 0.5s;
+}
+
+/* 展开动画效果 */
+@keyframes slide-down {
+  from {
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    max-height: 666px;
+  }
+}
+
+/* 收起动画效果 */
+@keyframes slide-up {
+  from {
+    max-height: 666px;
+  }
+  to {
+    max-height: 0;
+    overflow: hidden;
   }
 }
