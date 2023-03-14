@@ -62,8 +62,7 @@ export class SideBar extends Component {
     const { menuKey } = this.state;
     console.log("key", menuKey);
     return (
-      <div className='sidebar-container'>
-        {show && (
+      show && <div className='sidebar-container'>
           <Menu
             onClick={this.setMenuItem}
             // defaultSelectedKeys={}
@@ -75,7 +74,6 @@ export class SideBar extends Component {
             //  inlineCollapsed={collapsed}
             items={items}
           />
-        )}
       </div>
     );
   }

@@ -31,22 +31,20 @@ const globalConfig = {
   locale: zhCN, // 本地化语言
   theme: {
     components: {
-      Button: {
-        // colorPrimary: variables["button-color"],
+      Menu:{
+        colorPrimary: variables["theme-color"]
       },
+      Button:{
+        colorPrimary: variables["button-color"],
+        colorPrimaryHover: variables["button-color"],
+        colorPrimaryActive: variables["button-color"],
+      }
     },
-    token: {
-      colorPrimary: variables["button-color"]
-    },
+    // token: {
+    //   colorPrimary: variables["button-color"]
+    // },
   },
-  // OverrideToken:{
-  //   Button:{
-  //     // backgroundColor:variables["button-color"]
-  //     token: {
-  //       colorPrimary: '#1890ff',
-  //     },
-  //   }
-  // }
+
 };
 
 // 提醒框
