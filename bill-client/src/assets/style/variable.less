@@ -3,9 +3,12 @@
 @COLOR_PRIMARY_BLUE_3: #7b8cff;
 @COLOR_PRIMARY_GREEN_1: #00b96b;
 @COLOR_PRIMARY_GREEN_2: #29bece;
+@PAY_COLOR: rgb(23, 119, 255);
+@BUTTON_COLOR: #29bece;
 // 定义主题色变量
-@theme-color: @COLOR_PRIMARY_GREEN_2;
-@pay-color: rgb(23, 119, 255);
+@theme-color: @PAY_COLOR;
+@pay-color: @PAY_COLOR;
+@button-color: @BUTTON_COLOR;
 
 // 定义单行文本缩略样式  ps: @ellipsis()  引用
 @ellipsis: {
@@ -25,4 +28,5 @@
 
 :export {
   theme-color: @theme-color;
+  button-color: @button-color;
 }

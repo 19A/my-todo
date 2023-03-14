@@ -174,7 +174,6 @@ export class Page extends Component {
               <div className='mobile-collapse' onClick={this.toggleMenu}>
                 {menuShow ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
               </div>
-              {/* <MenuOutlined /> */}
             </div>
             <div className='right'>
               <Dropdown menu={{ items: this.getOverlay() }}>

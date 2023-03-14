@@ -30,11 +30,23 @@ console.log("var", variables);
 const globalConfig = {
   locale: zhCN, // 本地化语言
   theme: {
-    token: {
-      colorPrimary: variables["theme-color"]
+    components: {
+      Button: {
+        // colorPrimary: variables["button-color"],
+      },
     },
-    Menu: variables["theme-color"]
-  }
+    token: {
+      colorPrimary: variables["button-color"]
+    },
+  },
+  // OverrideToken:{
+  //   Button:{
+  //     // backgroundColor:variables["button-color"]
+  //     token: {
+  //       colorPrimary: '#1890ff',
+  //     },
+  //   }
+  // }
 };
 
 // 提醒框
