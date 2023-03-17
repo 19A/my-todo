@@ -8,8 +8,6 @@ import { queryTotalApi } from "@/services";
 
 import "./index.less";
 
-const dateFormat = "YYYY/MM/DD";
-const weekFormat = "MM/DD";
 const monthFormat = "YYYY-MM";
 const yearFormat = "YYYY";
 
@@ -32,7 +30,7 @@ const Analysis = () => {
 
   useEffect(() => {
     queryTotal();
-  }, [stage, month, year]);
+  }, []);
 
   const queryTotal = useCallback(async () => {
     const res = await queryTotalApi({
@@ -46,18 +44,6 @@ const Analysis = () => {
       setTotal(res.data);
     }
   }, [month, year, stage]);
-  // const queryTotal = async() => {
-  //   const res = await queryTotalApi({
-  //     statisticType: stage === "month" ? 1 : 2,
-  //     statisticDate:
-  //       stage === "month"
-  //         ? dayjs(month).format(monthFormat)
-  //         : dayjs(year).format(yearFormat)
-  //   });
-  //   if (res.data) {
-  //     setTotal(res.data);
-  //   }
-  // };
 
   const data = [
     {
@@ -218,8 +204,11 @@ const Analysis = () => {
   };
   const getAnalysisTab = () => {
     const getItem = () => {
-      // return <Line {...config} />;
-      return <div />;
+      return (
+        <div style={{ display: "none" }}>
+          <Line {...config} />;
+        </div>
+      );
     };
     return [
       {

@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Space, Card, Table, Modal } from "antd";
+import { Card, Table, Modal, Avatar } from "antd";
 import Tabs from "@/components/Tabs";
-// import { data } from "@/mock/chart.js";
 import { PieChartOutlined, MoneyCollectOutlined } from "@ant-design/icons";
 import { queryBillListApi } from "@/services";
+import defaultAvatar from "@/assets/avatar_pro.png";
 import DemoLine from "./chart";
 
 import "./index.less";
@@ -31,36 +31,29 @@ export default class BillChart extends Component {
   }
 
   getTableItem = (record) => {
-    const {
-      bill_id,
-      tradeTime,
-      tradeClassify,
-      trader,
-      trader_account,
-      productDescription,
-      trade_type,
-      money,
-      payment_method,
-      trade_state,
-      merchant_order_number,
-      remark,
-      sys_user_id,
-      del_flag,
-      createTime,
-      update_time,
-      bill_type
-    } = record;
+    const { tradeTime, tradeClassify, productDescription, money, remark } =
+      record;
     return (
       <div onClick={() => this.goDetail(record)} className='bill-item'>
-        <div className='desc'>
-          <div className='desc-product'>{productDescription}</div>
-          <div className='desc-amount'> {money}</div>
+        <div className='left'>
+          {" "}
+          <Avatar
+            size='large'
+            style={{ width: "100%", height: "100%" }}
+            src={defaultAvatar}
+          />
         </div>
-        <div className='tag'>
-          {tradeClassify}
-          {remark}
+        <div className='right'>
+          <div className='desc'>
+            <div className='desc-product'>{productDescription}</div>
+            <div className='desc-amount'> {money}</div>
+          </div>
+          <div className='tag'>
+            {tradeClassify}
+            {remark}
+          </div>
+          <p className='time'>{tradeTime}</p>
         </div>
-        <p className='time'>{tradeTime}</p>
       </div>
     );
   };

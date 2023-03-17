@@ -6,8 +6,6 @@
  * @copyright Copyright (c) 2020, Hand
  */
 
-// import Qs from "qs";
-// import Qs from "querystring";
 import axios from "axios";
 import { notification } from "antd";
 import { getUserToken, getUserInfo, clearUser } from "./index";
@@ -53,32 +51,6 @@ service.interceptors.request.use(
       config.headers.Authorization = getUserToken();
       config.headers.token = getUserToken();
     }
-
-    // //处理GET数组参数序列化
-    // if (config.method === "get") {
-    //   // config.headers["Content-Type"] = "text/plain";
-    //   // config.headers["Content-Type"] = "application/x-www-form-urlencoded";
-    //   // config.headers["Content-Type"] = "application/x-www-form-urlencoded";
-
-    //   config.paramsSerializer = {
-    //     // serialize: testSerializer,
-    //     serialize: (params) => {
-    //       debugger;
-    //       const a = qs.stringify(
-    //         {
-    //           // foo: "bar",
-    //           // baz: ["qux", "quux"],
-    //           corge: {
-    //             b: "b1"
-    //           }
-    //         },
-    //         { arrayFormat: "brackets", encode: false }
-    //       );
-    //       debugger;
-    //       return a;
-    //     }
-    //   };
-    // }
     config.headers["Content-Type"] = "application/json";
     return config;
   },
@@ -116,33 +88,23 @@ service.interceptors.response.use(
   function (error) {
     // 超出 2xx 范围的状态码都会触发该函数。
     handleNotifyError(error.response.data);
-    // 统一弹框抛错
     switch (error.response.status) {
-      // 401: 未登录
-      // 未登录则跳转登录页面，并携带当前页面的路径
-      // 在登录成功后返回当前页面，这一步需要在登录页操作。
+      // 401: 未登录   跳转登录页面，并携带当前页面的路径 登录后返回当前页面
       case 401:
         setTimeout(() => {
           back();
         }, REDIRECT_DUTATION);
         break;
+      // 403 token过期 清除本地token和清空mobx中token对象
       case 403:
         clearUser();
         window.alert("登录过期，请重新登录");
-        // 403 token过期 对用户进行提示
-        // 清除本地token和清空vuex中token对象
-        // 跳转登录页面，并将要浏览的页面fullPath传过去，登录成功后跳转需要访问的页面
         setTimeout(() => {
           back();
         }, REDIRECT_DUTATION);
         break;
       // 404请求不存在
       case 404:
-        // Toast({
-        //   message: "网络请求不存在",
-        //   duration: 1500,
-        //   forbidClick: true
-        // });
         break;
       default:
       // notification.error({
@@ -156,7 +118,7 @@ service.interceptors.response.use(
 
 /**
  * @param {String} url 请求地址
- * @param {Obejct} params 请求参数
+ * @param {Object} params 请求参数
  */
 export function get(url, params) {
   return new Promise((resolve, reject) => {

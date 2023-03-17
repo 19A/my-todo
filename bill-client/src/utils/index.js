@@ -3,17 +3,23 @@ import globalStore from "@/store/index";
 const isNumber = (num) => typeof num === "number";
 
 export function getUserToken() {
-  // 优先从mobx内取 再从localStorage中取
   return globalStore.token || localStorage.getItem("token");
 }
 
 export function getUserInfo() {
-  // 优先从mobx内取 再从localStorage中取
   const token =
     globalStore.userInfo || JSON.parse(localStorage.getItem("userInfo"));
   return token;
 }
 
+export function clearUser() {
+  globalStore.token = null;
+  globalStore.userInfo = null;
+  localStorage.removeItem("token");
+  localStorage.removeItem("userInfo");
+}
+
+// 格式化日期
 export function dateFormat(fmt, date) {
   let ret;
   const opt = {
@@ -37,13 +43,6 @@ export function dateFormat(fmt, date) {
   return fmt;
 }
 
-export function clearUser() {
-  globalStore.token = null;
-  globalStore.userInfo = null;
-  localStorage.removeItem("token");
-  localStorage.removeItem("userInfo");
-}
-
 export function nullValueFilter(obj) {
   for (const key in obj) {
     if (Object.hasOwnProperty.call(obj, key)) {
@@ -56,11 +55,10 @@ export function nullValueFilter(obj) {
 }
 
 export function createPagination(data) {
-  //   page: 1
+  // page: 1
   // size: 10
   // totalElements: 13
   // totalPages: 2
-
   const { page, size, totalElements } = data;
   return {
     pageSize: Number(size) || Number(data.pageSize),

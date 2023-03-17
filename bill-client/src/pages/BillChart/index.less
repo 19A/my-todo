@@ -23,22 +23,32 @@
   }
   .bill-table {
     .bill-item {
-      .desc {
-        display: flex;
-        justify-content: space-between;
-        &-product {
-          //   @ellipsis();
-          @multiple-ellipsis();
-          width: 240px;
-        }
-        &-amount {
-          font: 20px weight;
-        }
+      display: flex;
+      .left {
+        width: 40px;
+        height: 40px;
+        max-width: 18%;
+        margin-right: 2%;
       }
-      .tag,
-      .time {
-        font: 12px weight;
-        color: #ccc;
+      .right {
+        max-width: 80%;
+        .desc {
+          display: flex;
+          justify-content: space-between;
+          &-product {
+            //   @ellipsis();
+            @multiple-ellipsis();
+            width: 240px;
+          }
+          &-amount {
+            font: 20px weight;
+          }
+        }
+        .tag,
+        .time {
+          font: 12px weight;
+          color: #ccc;
+        }
       }
     }
   }

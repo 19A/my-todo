@@ -187,8 +187,8 @@ const Person = () => {
     if (info.file.status === "done") {
       // Get this url from response in real world.
       const url = info.file?.response?.data;
-      console.log('url',url);
-      if(!url) return;
+      console.log("url", url);
+      if (!url) return;
       // {"sysUserId":"cf06fa1f-aaf8-450f-b432-8b00a28e4ec3","sysUserCode":"zhubiao","sysUserName":"朱彪"}
       updateUserApi({
         userId,
@@ -199,11 +199,11 @@ const Person = () => {
       }).then((res) => {
         // if(res){}
         queryUser();
-        setLoading(false)
+        setLoading(false);
       });
       // getBase64(info.file.originFileObj, (url) => {
       //   setLoading(false);
-     
+
       //   // setImageUrl(url);
       // });
     }
@@ -221,7 +221,7 @@ const Person = () => {
         setUser(res.data);
       }
     });
-  }
+  };
 
   return (
     <div className='person-container'>
@@ -229,7 +229,6 @@ const Person = () => {
         <div className='item'>
           <div className='label'>头像</div>
           <div className='text'>
-            {/* <Avatar src={user.avator || defaultAvatar} /> */}
             <Upload
               name='file'
               listType='picture-card'
@@ -237,34 +236,14 @@ const Person = () => {
               showUploadList={false}
               onChange={handleChange}
               beforeUpload={beforeUpload}
-              headers={{token, Authorization:token}}
+              headers={{ token, Authorization: token }}
               action='http://1.117.165.71/x-api/file/uploadFile'
             >
-              {user.avator ? (
-                // <img
-                //   src={user.avator}
-                //   alt='avatar'
-                //   style={{
-                //     width: "100%"
-                //   }}
-                // />
-                <Avatar     
-                  size='large'
-                  style={{width: "100%",height:'100%'}}
-                  src={user.avator || defaultAvatar}
-                  />
-              ) : (
-                <div>
-                  {loading ? <LoadingOutlined /> : <PlusOutlined />}
-                  <div
-                    style={{
-                      marginTop: 8
-                    }}
-                  >
-                    Upload
-                  </div>
-                </div>
-              )}
+              <Avatar
+                size='large'
+                style={{ width: "100%", height: "100%" }}
+                src={user.avator || defaultAvatar}
+              />
             </Upload>
           </div>
         </div>
@@ -280,10 +259,6 @@ const Person = () => {
           <div className='label'>邮箱</div>
           <div className='text'>{user.email}</div>
         </div>
-        {/* <div className='item'>
-          <div className='label'>账单是否同步</div>
-          <div className='text'>是</div>
-        </div> */}
       </Card>
     </div>
   );

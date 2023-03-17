@@ -12,7 +12,6 @@ import { get, post, put } from "../utils/network";
  * @param {*} 用户登录信息
  */
 export function loginApi(data) {
-  // return post(`/user/login`, data);
   return post(`/sysUser/login`, data);
 }
 
