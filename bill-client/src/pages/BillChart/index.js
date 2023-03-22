@@ -35,14 +35,7 @@ export default class BillChart extends Component {
       record;
     return (
       <div onClick={() => this.goDetail(record)} className='bill-item'>
-        <div className='left'>
-          {" "}
-          <Avatar
-            size='large'
-            style={{ width: "100%", height: "100%" }}
-            src={defaultAvatar}
-          />
-        </div>
+        <img className='left' src={defaultAvatar} />
         <div className='right'>
           <div className='desc'>
             <div className='desc-product'>{productDescription}</div>

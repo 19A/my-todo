@@ -1,0 +1,35 @@
+
+<div id="app">
+  {{ message }}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+<script>
+var VM = new Vue({
+  el: '#app', // 表示当我们new的这个Vue实例, 要控制页面上的那个区域
+  data: { // data属性中，存放的是el中要用到的数据,这里的data就是MVVM中的M专门用来保存每个页面的数据
+    message: 'Hello Vue!'
+  },
+  directives: {
+    "color":{
+      bind: function () {},
+      inserted: function () {},
+      update: function () {},
+      componentUpdated: function () {},
+      unbind: function () {}
+    },
+    // 下面这个是简写方式: 简写的function等同于把代码写到了bind和updata函数中
+    color: function(el, binding) {
+        el.style.color = binding.value
+    }
+  }
+})
+// 注册一个全局自定义指令 `v-focus`
+Vue.directive('focus', {
+  // 当被绑定的元素插入到 DOM 中时……
+  inserted: function (el) {
+    // 聚焦元素
+    el.focus()
+  }
+})
+
+</script>
