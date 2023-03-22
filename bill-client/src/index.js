@@ -54,13 +54,42 @@ notification.config({
   duration: 2,
   rtl: false // 一种阅读模式 right to left
 });
+    // if (redirect) {
+      //   return <Redirect key={index} exact={exact} from={path} to={redirect} />;
+      // }
+
+const configRoutes = (routes) => (
+  <Switch>
+    {routes.map((route, index) => {
+      const { path, exact, redirect, component: Component, routes: subRoutes } = route;
+      return (
+        <Route
+          key={index}
+          path={path}
+          exact={true}
+          render={(props) => {
+            if (subRoutes) {
+              console.log('props',props,subRoutes);
+              return <Component {...props} routes={subRoutes} exact/>;
+            } else {
+              return <Component {...props} exact/>;
+            }
+          }}
+        />
+      );
+    })}
+  </Switch>
+);
 
 const App = (app) => {
   return (
     <Switch>
-      {routers.map(
+       {configRoutes(routers)}
+      {/* <Redirect from='/' to='/bill-chart' exact /> */}
+      {/* {routers.map(
         ({ component: Comp, unauthorized, children, path, ...other }) => {
           return (
+            <RouteWithSubRoutes key={index} {...route} />
             <Route {...other} key={path} path={path}>
               {unauthorized && <Comp />}
               {!unauthorized && (
@@ -72,7 +101,7 @@ const App = (app) => {
           );
         }
       )}
-      <Redirect from='/' to='/bill-chart' exact />
+      <Redirect from='/' to='/bill-chart' exact /> */}
     </Switch>
   );
 };
