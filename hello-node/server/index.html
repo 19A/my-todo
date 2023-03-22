@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ESM run in browser</title>
+  </head>
+  <body>
+    <!--导入md5时报错 Uncaught TypeError: Failed to resolve module specifier "md5". Relative references must start with either "/", "./", or "../".
+      这是因为不论是通过 <script type="module" /> 标签还是通过 import 语句导入，模块的路径都必须是以 / 、 ./ 或者是 ../ 开头，因此无法直接通过 npm 包名进行导入。
+    -->
+    <!-- 注意需要先通过 `importmap` 引入 npm 包的 CDN -->
+    <script type="importmap">
+      {
+        "imports": {
+          "md5": "https://esm.run/md5"
+        }
+      }
+    </script>
+    <!-- type="module" 属性，这代表这个 script 是使用了 ESM 模块 -->
+    <script type="module" src="./index.mjs"></script>
+    <!-- <script type="module">
+      import { a, b as c } from "./module.mjs";
+      console.log("Hello World from c.");
+      c();
+    </script> -->
+  </body>
+</html>
