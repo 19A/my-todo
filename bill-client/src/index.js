@@ -57,29 +57,52 @@ notification.config({
     // if (redirect) {
       //   return <Redirect key={index} exact={exact} from={path} to={redirect} />;
       // }
-
-const configRoutes = (routes) => (
-  <Switch>
-    {routes.map((route, index) => {
-      const { path, exact, redirect, component: Component, routes: subRoutes } = route;
-      return (
-        <Route
-          key={index}
-          path={path}
-          exact={true}
-          render={(props) => {
-            if (subRoutes) {
-              console.log('props',props,subRoutes);
-              return <Component {...props} routes={subRoutes} exact/>;
-            } else {
-              return <Component {...props} exact/>;
-            }
-          }}
-        />
-      );
-    })}
-  </Switch>
-);
+      const configRoutes = (routes, extraProps = {}, switchProps = {}) =>
+      routes ? (
+        <Switch {...switchProps}>
+          {routes.map((route, i) => ( 
+          <Route
+            key={route.key || i}
+            path={route.path}
+            exact={route.exact}
+            strict={route.strict}
+            render={props => (
+            <route.component {...props} {...extraProps} route={route} />
+            )}
+          />
+          ))}
+        </Switch>
+        ) : null;
+// const configRoutes = (routes) => (
+//   routes ? <Switch>
+//     {routes.map((route, index) => {
+//       const { path, exact, redirect, component: Component, routes: subRoutes } = route;
+//       return (
+//         <Route
+//           key={index}
+//           path={path}
+//           exact={true}
+//           render={(props) => {
+//             // if (subRoutes) {
+//             //   console.log('props',props,subRoutes);
+//             //   return <Component {...props} children={subRoutes}/>;
+//             //   // return configRoutes(subRoutes);
+//             // } else {
+//             //   return <Component {...props}/>;
+//             // }
+//             // props = Object.assign({route}, props)
+//             return (
+//               route.render
+//                 ? route.render
+//                 : <route.component {...props} router={route}/>
+//             )
+//           }}
+//         />
+//       );
+//     })}
+//   </Switch>
+//   : null
+// );
 
 const App = (app) => {
   return (

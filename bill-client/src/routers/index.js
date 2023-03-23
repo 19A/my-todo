@@ -51,8 +51,11 @@ export const routers = [
     path: '/products',
     component: Products,
     exact: true,
-    routes: [
-      { path: '/products/1', component: ProductDetail,exact: true, }
+    children: [
+      { 
+        path: '/products/1', 
+        component: ProductDetail,
+      }
     ]
   },
   // { path: '/products/1', component: ProductDetail,exact: true, }
