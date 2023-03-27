@@ -195,3 +195,12 @@ function greetPro(name: string | string[]) {
 }
 
 // 任意值 any
+
+// 类型断言
+const greeting1 = greet('Petter') as string;
+
+// 类型推论
+// 原始数据类型的类型定义是可以省略的，因为 TypeScript 会根据声明变量时赋值的类型，自动帮推导变量类型
+
+let msg = 'Hello World';
+// msg = 123

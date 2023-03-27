@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type":"modules",
   "scripts": {
     "dev:cjs": "node src/cjs/index.cjs",
     "dev:esm": "node src/esm/index.mjs",
-    "dev:ts": "ts-node src/ts/index.ts",
+    "dev:ts": "node src/ts/index.ts",
+    "build": "tsc src/ts/index.ts --outDir dist",
     "compile": "babel src/babel --out-dir compiled",
     "serve": "node server/index.js"
   },

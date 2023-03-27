@@ -1,7 +1,17 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "es6",
-    "outDir": "./dist"
+    // "target": "es6",
+    // "module": "ES6",
+    // "outDir": "./dist"
+    "target": "es2015" /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */,
+    "module": "commonjs",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "ts-node": {
+    "esm": true
   }
 }
