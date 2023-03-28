@@ -1,6 +1,6 @@
 // 使用ts原因：提前规避一些错误...
 function getFirstWord(msg: string | number) {
-    console.log(msg.split(' ')[0])
+    console.log(String(msg).split(' ')[0])
 }
 
 getFirstWord('Hello World')
@@ -99,7 +99,7 @@ const bookA: Book = new Book('A');
 bookA.getName();
 
 // 类也可以提供给接口去继承：
-interface BookA extends Omit<BookBase, 'getName' {
+interface BookA extends Omit<BookBase, 'getName'> {
     page: number;
 }
 const bookB: BookA = {
@@ -112,21 +112,21 @@ const bookB: BookA = {
 
 // 函数
 // 写法一：函数声明
-function sum1(x, y) {
+function sum1(x: number, y: number) {
     return x + y
 }
 
 // 写法二：函数表达式
-const sum2 = function (x, y) {
+const sum2 = function (x: number, y: number) {
     return x + y
 }
 
 // 写法三：箭头函数
-const sum3 = (x, y) => x + y
+const sum3 = (x: number, y: number) => x + y
 
 // 写法四：对象上的方法
 const obj = {
-    sum4(x, y) {
+    sum4(x: number, y: number) {
         return x + y
     },
 }
